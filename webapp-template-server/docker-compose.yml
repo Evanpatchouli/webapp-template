@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  # NestJS 应用服务
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: webapp-template-server
+    restart: always
+    ports:
+      - "8693:8693"
+    environment:
+      NODE_ENV: production
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
