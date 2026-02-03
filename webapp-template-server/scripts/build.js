@@ -11,13 +11,25 @@ try {
 
   // 2. 复制 .env
   const envSource = '.env';
+  const envProdSource = '.env.production';
   const envDest = 'dist/.env';
+  const envProdDest = 'dist/.env.production';
 
   if (fs.existsSync(envSource)) {
     fs.copyFileSync(envSource, envDest);
     console.log(`✅ 已复制 ${envSource} 到 ${envDest}`);
   } else {
     console.warn(`⚠️  ${envSource} 不存在，跳过复制`);
+  }
+
+  if (fs.existsSync(envProdSource)) {
+    fs.copyFileSync(envProdSource, envProdDest);
+    console.log(`✅ 已复制 ${envProdSource} 到 ${envProdDest}`);
+  } else if (fs.existsSync(envSource)) {
+    fs.copyFileSync(envSource, envProdDest);
+    console.log(`✅ 已复制 ${envSource} 到 ${envProdDest}`);
+  } else {
+    console.warn(`⚠️  ${envProdSource} 和 ${envSource} 都不存在，跳过复制`);
   }
 
   console.log('🎉 所有操作完成！');
