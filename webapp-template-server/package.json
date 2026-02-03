@@ -53,7 +53,7 @@
     "svg-captcha": "^1.4.0",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^13.0.0",
-    "mongoose": "^9.1.5",
+    "mongoose": "^9.1.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
