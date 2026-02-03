@@ -1,0 +1,27 @@
+const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+
+console.log('🚀 开始构建 NestJS 项目...');
+
+try {
+  // 1. 构建
+  execSync('npx nest build', { stdio: 'inherit' });
+  console.log('✅ 构建完成！');
+
+  // 2. 复制 .env
+  const envSource = '.env';
+  const envDest = 'dist/.env';
+
+  if (fs.existsSync(envSource)) {
+    fs.copyFileSync(envSource, envDest);
+    console.log(`✅ 已复制 ${envSource} 到 ${envDest}`);
+  } else {
+    console.warn(`⚠️  ${envSource} 不存在，跳过复制`);
+  }
+
+  console.log('🎉 所有操作完成！');
+} catch (error) {
+  console.error('❌ 执行失败:', error.message);
+  process.exit(1);
+}
