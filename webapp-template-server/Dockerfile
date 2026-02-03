@@ -27,7 +27,7 @@ WORKDIR /app
 RUN npm install -g pnpm
 
 # 复制 package 文件
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml .env .env.production ./
 
 # 只安装生产依赖
 RUN pnpm install --prod --frozen-lockfile
