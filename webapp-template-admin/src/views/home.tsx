@@ -110,7 +110,7 @@ export default function Home() {
           </div>
         </Content>
         <Footer style={{ textAlign: "center", flexShrink: 0 }}>
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
+          WebApp Template ©{new Date().getFullYear()} Powered by Evanpatchouli
         </Footer>
       </Layout>
     </Layout>
