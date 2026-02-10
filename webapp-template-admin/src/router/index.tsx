@@ -6,6 +6,7 @@ import Forbidden from "@/views/forbidden";
 import PermissionDemo from "@/views/permission-demo";
 import AuthRoute from "@/components/AuthRoute";
 import { PERMISSIONS } from "@/constants/permissions";
+import { lazy } from "react";
 
 const router = createHashRouter([
   {
@@ -22,7 +23,11 @@ const router = createHashRouter([
     children: [
       {
         index: true, // 当访问父路由时
-        element: <Navigate to="/role" replace />,
+        element: <Navigate to="/dashboard" replace />,
+      },
+      {
+        path: "/dashboard",
+        Component: lazy(() => import("@/views/dashboard")),
       },
       {
         path: "/role",

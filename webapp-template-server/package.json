@@ -47,13 +47,13 @@
     "minimatch": "^10.1.1",
     "mitt": "^3.0.1",
     "module-alias": "^2.2.3",
+    "mongoose": "^9.1.5",
     "nanoid": "^5.1.6",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "svg-captcha": "^1.4.0",
     "swagger-ui-express": "^5.0.1",
-    "uuid": "^13.0.0",
-    "mongoose": "^9.1.5"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

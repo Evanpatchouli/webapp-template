@@ -1,4 +1,6 @@
 import { useLoginStore } from "@/auth/store";
+import Resp from "@/models/Resp";
+import type { IResp } from "@/types/resp";
 import { message } from "antd";
 import axios, { AxiosError, type AxiosResponse } from "axios";
 import { joinURL, withLeadingSlash, withoutTrailingSlash } from "ufo";
@@ -41,7 +43,9 @@ const createBaseRequest = (baseUrl?: string) => {
 };
 
 export const createAppRequest = (subpath: string = "") => {
-  const baseUrl = withoutTrailingSlash(withLeadingSlash(joinURL(appBaseUrl, subpath)));
+  const baseUrl = withoutTrailingSlash(
+    withLeadingSlash(joinURL(appBaseUrl, subpath)),
+  );
   const instance = createBaseRequest(baseUrl);
 
   // 请求拦截器
@@ -62,7 +66,8 @@ export const createAppRequest = (subpath: string = "") => {
   instance.interceptors.response.use(
     // @ts-ignore
     (response: AxiosResponse<ApiResponse>) => {
-      return response.data;
+      const { code, message, data } = response.data as IResp;
+      return new Resp(code, message, data);
       // // 如果是 2xx 状态码，直接返回数据
       // if (response.status >= 200 && response.status < 300) {
       //   return response.data;
@@ -114,7 +119,8 @@ export const createAppRequest = (subpath: string = "") => {
       const response = error.response;
       const apiError: ApiError = {
         code: (response.data as any)?.code || response.status,
-        message: (response.data as any)?.message || response.statusText || "请求失败",
+        message:
+          (response.data as any)?.message || response.statusText || "请求失败",
         data: (response.data as any)?.data || response.data,
         timestamp: (response.data as any)?.timestamp,
         success: (response.data as any)?.success || false,

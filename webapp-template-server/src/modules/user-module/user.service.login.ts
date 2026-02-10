@@ -44,6 +44,7 @@ export class UserLoginService {
         roles,
         permissions,
       );
+      const nickname = user.nickname;
       const phone = user.phone;
       const username = user.username;
 
@@ -54,6 +55,7 @@ export class UserLoginService {
 
       return LoginResult.new()
         .Id(user.id)
+        .Nickname(nickname)
         .Openid(openid)
         .Phone(phone)
         .Username(username)
@@ -81,6 +83,7 @@ export class UserLoginService {
       roles,
       permissions,
     );
+    const nickname = user.nickname;
     const phone = user.phone;
     const username = user.username;
 
@@ -92,6 +95,7 @@ export class UserLoginService {
 
     return LoginResult.new()
       .Id(user.id)
+      .Nickname(nickname)
       .Openid(openid)
       .Phone(phone)
       .Username(username)
@@ -111,6 +115,7 @@ export class UserLoginService {
       password,
     );
     if (user) {
+      const nickname = user.nickname;
       const user_id = user.id;
       const openid = user.openid;
       const phone = user.phone;
@@ -138,6 +143,7 @@ export class UserLoginService {
 
       return LoginResult.new()
         .Id(user_id)
+        .Nickname(nickname)
         .Openid(openid)
         .Phone(phone)
         .Username(username)
@@ -161,6 +167,7 @@ export class UserLoginService {
   ): Promise<ILoginResult> {
     let user = await this.userModel.findByPhone(phone);
     if (user) {
+      const nickname = user.nickname;
       const user_id = user.id;
       const openid = user.openid;
       const username = user.username;
@@ -188,6 +195,7 @@ export class UserLoginService {
 
       return LoginResult.new()
         .Id(user_id)
+        .Nickname(nickname)
         .Openid(openid)
         .Phone(phone)
         .Username(username)
@@ -198,6 +206,7 @@ export class UserLoginService {
     // 创建用户
     user = await this.userModel.create({ phone }, ip, last_login_at);
 
+    const nickname = user.nickname;
     const user_id = user.id;
     const openid = user.openid;
     const username = user.username;
@@ -232,6 +241,7 @@ export class UserLoginService {
 
     return LoginResult.new()
       .Id(user_id)
+      .Nickname(nickname)
       .Openid(openid)
       .Phone(phone)
       .Username(username)

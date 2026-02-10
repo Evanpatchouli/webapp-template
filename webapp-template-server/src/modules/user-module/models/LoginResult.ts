@@ -2,6 +2,7 @@ import { Maybe } from '../../../types';
 
 export interface ILoginResult {
   id: string;
+  nickname?: Maybe<string>;
   openid?: Maybe<string>;
   phone?: Maybe<string>;
   username?: Maybe<string>;
@@ -12,6 +13,7 @@ export interface ILoginResult {
 
 export class LoginResult implements ILoginResult {
   id: string;
+  nickname?: Maybe<string>;
   openid?: Maybe<string>;
   phone?: Maybe<string>;
   username?: Maybe<string>;
@@ -25,6 +27,11 @@ export class LoginResult implements ILoginResult {
 
   Id(id: string) {
     this.id = id;
+    return this;
+  }
+
+  Nickname(nickname: Maybe<string>) {
+    this.nickname = nickname;
     return this;
   }
 

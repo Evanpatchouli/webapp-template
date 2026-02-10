@@ -10,6 +10,7 @@ export class UserLoginEvent implements BaseEvent {
   openid?: Maybe<string>;
   phone?: Maybe<string>;
   username?: Maybe<string>;
+  nickname?: Maybe<string>;
   token: string;
   roles: string[];
   permissions: string[];
@@ -20,8 +21,22 @@ export class UserLoginEvent implements BaseEvent {
     this.openid = loginResult.openid;
     this.phone = loginResult.phone;
     this.username = loginResult.username;
+    this.nickname = loginResult.nickname;
     this.token = loginResult.token;
     this.roles = loginResult.roles;
     this.permissions = loginResult.permissions;
+  }
+
+  getPayload() {
+    return {
+      id: this.id,
+      openid: this.openid,
+      phone: this.phone,
+      username: this.username,
+      nickname: this.nickname,
+      token: this.token,
+      roles: this.roles,
+      permissions: this.permissions,
+    };
   }
 }

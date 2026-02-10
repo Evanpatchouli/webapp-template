@@ -689,6 +689,7 @@ export async function v1() {
     if (superAdminRole && !defaultAdminUser) {
       const adminUser = new UserModel({
         openid: defaultAdminUserOpenid,
+        nickname: '超级管理员',
         phone: '19157691370',
         username: 'root',
         password: 'root',

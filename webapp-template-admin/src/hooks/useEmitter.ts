@@ -6,6 +6,7 @@ import type { UserLoginEvent } from "@/events/user.event";
 type Events = {
   ["*"]: any;
   ["user.login"]: UserLoginEvent;
+  ["user.logout"]: any;
 };
 
 export const emitter: Emitter<Events> = mitt<Events>();
@@ -25,7 +26,10 @@ export function useEmit() {
   };
 }
 
-export function useEvent<T extends keyof Events>(event: T, handler: (payload: Events[T]) => void) {
+export function useEvent<T extends keyof Events>(
+  event: T,
+  handler: (payload: Events[T]) => void,
+) {
   useEffect(() => {
     emitter.on(event, handler);
     return () => emitter.off(event, handler);

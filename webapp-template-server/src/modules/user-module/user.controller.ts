@@ -3,7 +3,6 @@ import {
   Body,
   Controller,
   Inject,
-  Ip,
   Post,
   Query,
   Session,
@@ -27,6 +26,7 @@ import { CaptchaWay } from '@/constants/captcha.constant';
 import type { SessionState } from '@/types';
 import { OPTWay } from '@/constants/opt.constant';
 import { Tag } from '../../decorators/tag.decorator';
+import { Ip } from '@/decorators/ip.decorator';
 
 class LoginQuery {
   @IsNotEmpty()

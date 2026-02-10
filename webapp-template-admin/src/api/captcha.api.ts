@@ -1,10 +1,11 @@
-import type Resp from "@/types";
+import type Resp from "@/models/Resp";
 import { createAppRequest } from "./request";
 import { CaptchaWay } from "../constants/index";
 import type { ValuesOf } from "@/types";
 
 const appRequest = createAppRequest("/captcha");
-export const getLoginCaptcha = () => appRequest.get<null, Resp<Base64URLString>>("/login");
+export const getLoginCaptcha = (): Promise<Resp<Base64URLString>> =>
+  appRequest.get("/login");
 
 export const getCaptcha = (way: ValuesOf<typeof CaptchaWay>) => {
   switch (way) {

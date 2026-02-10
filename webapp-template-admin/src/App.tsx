@@ -7,15 +7,14 @@ import "./App.css";
 function App() {
   const loginStore = useLoginStore();
 
-  useEvent('user.login', result => {
-    const { token, ...userInfo } = result;
+  useEvent("user.login", (result) => {
+    const { token, ...userInfo } = result.getPayload();
     loginStore.setToken(token);
     loginStore.setUserInfo({
-      nickname: "",
       ...userInfo,
-    } as UserInfo)
+    } as UserInfo);
     loginStore.setIsLogin(true);
-  })
+  });
 
   return <RouterView />;
 }

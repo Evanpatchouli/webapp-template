@@ -2,7 +2,6 @@ import { logger } from '@/common/logger';
 import { CaptchaWay } from '@/constants/captcha.constant';
 import { SessionState, ValuesOf } from '@/types';
 import { isBlank } from '@/utils/string.utl';
-import TimeUnitUtil from '@/utils/time.unit.util';
 import { orBlank } from '@/utils/value';
 import { Injectable, Session } from '@nestjs/common';
 import svgCaptcha from 'svg-captcha';
@@ -17,7 +16,7 @@ export default class CaptchaService {
       ignoreChars: '0o1i', // 排除容易混淆的字符
       noise: 2, // 干扰线条数
       color: true, // 字符是否有颜色
-      background: '#f0f2f5', // 背景色
+      background: '#fff', // 背景色 #f0f2f5，灰色看不清
     });
     session[way] = text;
     return Buffer.from(data, 'utf8').toString('base64');
@@ -29,11 +28,14 @@ export default class CaptchaService {
     session: SessionState,
     autoDisable = true,
   ) {
-    logger.info(`verify captcha: text(${text}) <=> session[way](${session[way]})`);
+    logger.info(
+      `verify captcha: text(${text}) <=> session[way](${session[way]})`,
+    );
     if (!text || isBlank(text)) {
       return false;
     }
-    const isValid = orBlank(text).toLowerCase() === orBlank(session[way]).toLowerCase();
+    const isValid =
+      orBlank(text).toLowerCase() === orBlank(session[way]).toLowerCase();
     if (isValid && autoDisable) {
       this.disable(way, session);
     }

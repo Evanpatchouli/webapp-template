@@ -1,17 +1,13 @@
 import React, { useMemo } from "react";
-import { UserOutlined } from "@ant-design/icons";
-import {
-  Flex,
-  Layout,
-  Menu,
-  theme,
-  Typography,
-  type MenuProps,
-} from "antd";
+import { DashboardOutlined, UserOutlined } from "@ant-design/icons";
+import { Flex, Layout, Menu, theme, Typography, type MenuProps } from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { APP_NAME } from "@/constants";
 import { withoutTrailingSlash } from "ufo";
 import useLoginCheck from "@/hooks/useLoginCheck";
+import dayjs from "dayjs";
+import useLogout from "@/hooks/useLogout";
+import UserAvatar from "@/components/UserAvatar";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -19,6 +15,11 @@ type OnItemClick = (key: string) => void;
 
 const createItems = (onItemClick: OnItemClick) =>
   [
+    {
+      key: "/dashboard",
+      icon: React.createElement(DashboardOutlined),
+      label: "仪表盘",
+    },
     {
       key: "/role",
       icon: React.createElement(UserOutlined),
@@ -36,6 +37,7 @@ const createItems = (onItemClick: OnItemClick) =>
 
 export default function Home() {
   useLoginCheck();
+  useLogout();
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -64,7 +66,7 @@ export default function Home() {
   }, [location.pathname, selected]);
 
   return (
-    <Layout style={{ minHeight: '100vh', maxHeight: '100vh' }}>
+    <Layout style={{ minHeight: "100vh", maxHeight: "100vh" }}>
       <Sider
         style={styles.siderStyle}
         breakpoint="lg"
@@ -94,14 +96,34 @@ export default function Home() {
           selectedKeys={[selected]}
         />
       </Sider>
-      <Layout style={{ display: 'flex', flexDirection: 'column' }}>
-        <Header style={{ padding: 0, background: colorBgContainer, flexShrink: 0 }} />
-        <Content style={{ margin: "24px 16px 0", flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <Layout style={{ display: "flex", flexDirection: "column" }}>
+        <Header
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: 20,
+            background: colorBgContainer,
+            flexShrink: 0,
+          }}
+        >
+          <div></div>
+          <UserAvatar />
+        </Header>
+        <Content
+          style={{
+            margin: "24px 16px 0",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+          }}
+        >
           <div
             style={{
               padding: 24,
               flex: 1,
-              overflow: 'auto',
+              overflow: "auto",
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
@@ -110,7 +132,7 @@ export default function Home() {
           </div>
         </Content>
         <Footer style={{ textAlign: "center", flexShrink: 0 }}>
-          WebApp Template ©{new Date().getFullYear()} Powered by Evanpatchouli
+          WebApp Admin Template ©{dayjs().year()} Powered by Evanpatchouli
         </Footer>
       </Layout>
     </Layout>

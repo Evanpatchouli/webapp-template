@@ -11,6 +11,7 @@ export interface ILoginResult {
   openid?: Maybe<string>;
   phone?: Maybe<string>;
   username?: Maybe<string>;
+  nickname?: Maybe<string>;
   token: string;
   roles: string[];
   permissions: string[];
