@@ -26,6 +26,11 @@ const createItems = (onItemClick: OnItemClick) =>
       label: "角色管理",
     },
     {
+      key: "/user-manage",
+      icon: React.createElement(UserOutlined),
+      label: "用户管理",
+    },
+    {
       key: "/permission-demo",
       icon: React.createElement(UserOutlined),
       label: "权限示例",

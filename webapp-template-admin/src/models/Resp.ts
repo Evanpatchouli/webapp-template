@@ -19,7 +19,7 @@ export default class Resp<T = unknown> {
     return this.message;
   }
 
-  public getData(): Resp["data"] {
+  public getData(): Resp<T>["data"] {
     return this.data;
   }
 

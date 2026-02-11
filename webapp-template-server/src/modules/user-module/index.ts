@@ -10,6 +10,7 @@ import { RoleModule } from '../role-module';
 import { UserRegisterService } from './user.service.register';
 import { CaptchaModule } from '../captcha-module';
 import { OPTModule } from '../opt-module';
+import { UserManageService } from './user.service.manage';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { OPTModule } from '../opt-module';
     UserRoleService,
     UserRegisterService,
     UserService,
+    UserManageService,
   ],
-  exports: [UserService],
+  exports: [UserService, UserManageService],
 })
 export class UserModule {}

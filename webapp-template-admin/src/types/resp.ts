@@ -5,3 +5,11 @@ export interface IResp<T = unknown> {
   message: string;
   data: Nullable<T>;
 }
+
+export interface PaginatedResult<T> {
+  list: T[];
+  total: number;
+  page: number;
+  size: number;
+  totalPages: number;
+}

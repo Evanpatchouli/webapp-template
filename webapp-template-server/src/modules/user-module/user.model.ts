@@ -1,9 +1,10 @@
-import { Model } from 'mongoose';
+import { Model, QueryFilter } from 'mongoose';
 import { Injectable, Dependencies, Inject } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import { UserIdentity } from '@/types/user';
 import { orNull } from '@/utils/value';
+import { PaginatedResult } from '@/types/query';
 
 @Injectable()
 @Dependencies(getModelToken(User.name))
@@ -56,5 +57,32 @@ export class UserModel {
 
   async findByUsernameAndPassword(username: string, password: string) {
     return this.model.findOne({ username, password }).exec();
+  }
+
+  async findPage(
+    page: number,
+    size: number,
+    filter?: QueryFilter<User>,
+  ): Promise<PaginatedResult<User>> {
+    const [list, total] = await Promise.all([
+      this.model
+        .find(filter)
+        .skip((page - 1) * size)
+        .limit(size)
+        .exec(),
+      this.model.countDocuments(filter).exec(),
+    ]);
+
+    return {
+      list,
+      total,
+      page,
+      size,
+      totalPages: Math.ceil(total / size),
+    };
+  }
+
+  getModel() {
+    return this.model;
   }
 }

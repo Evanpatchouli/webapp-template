@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import UserLoginEvent from './user.login.event';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { logger } from '@/common/logger';
 import UserCreatedEvent from './user.created.event';
+import { LoginLogService } from '@/modules/login-log-module/loginLog.service';
 
 @Injectable()
 export class UserEventsListener {
-  constructor(@InjectConnection() private conn: Connection) {}
+  // constructor(@InjectConnection() private conn: Connection) {}
+  constructor(@Inject() private loginLogService: LoginLogService) {}
 
   @OnEvent('user.created')
   handleUserCreatedEvent(event: UserCreatedEvent) {
@@ -24,10 +26,11 @@ export class UserEventsListener {
   async handleUserLoginEvent(event: UserLoginEvent) {
     logger.info(`用户登录（id: ${event.id}, ip: ${event.last_login_ip}）`);
     logger.debug('用户登录事件:', event);
-    await this.conn.model('User').findByIdAndUpdate(event.id, {
-      last_login_ip: event.last_login_ip,
-      last_login_at: event.last_login_at,
-    });
+    await this.loginLogService.create(
+      event.id,
+      event.last_login_at,
+      event.last_login_ip,
+    );
   }
 
   @OnEvent('user.deleted')

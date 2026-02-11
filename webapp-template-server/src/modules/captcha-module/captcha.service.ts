@@ -29,7 +29,7 @@ export default class CaptchaService {
     autoDisable = true,
   ) {
     logger.info(
-      `verify captcha: text(${text}) <=> session[way](${session[way]})`,
+      `verify captcha: text(${text}) <=> session[way](${session[way]}) (Ignore case)`,
     );
     if (!text || isBlank(text)) {
       return false;

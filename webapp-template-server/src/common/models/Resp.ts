@@ -27,6 +27,15 @@ export default class Resp<T = unknown> {
     return this;
   }
 
+  PageData<E = Record<string, any>>(
+    list: E[],
+    page: number,
+    size: number,
+    total: number,
+  ) {
+    this.data = { list, page, size, total } as T;
+  }
+
   public static success<T>(data?: T): Resp<T> {
     return new Resp(RS.SUCCESS.code, RS.SUCCESS.message, data);
   }

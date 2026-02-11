@@ -7,6 +7,7 @@ import PermissionDemo from "@/views/permission-demo";
 import AuthRoute from "@/components/AuthRoute";
 import { PERMISSIONS } from "@/constants/permissions";
 import { lazy } from "react";
+import UserManageView from "@/views/user-manage";
 
 const router = createHashRouter([
   {
@@ -34,6 +35,14 @@ const router = createHashRouter([
         element: (
           <AuthRoute permission={PERMISSIONS.SYSTEM_MANAGE}>
             <RoleView />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "/user-manage",
+        element: (
+          <AuthRoute permission={PERMISSIONS.SYSTEM_MANAGE}>
+            <UserManageView />
           </AuthRoute>
         ),
       },

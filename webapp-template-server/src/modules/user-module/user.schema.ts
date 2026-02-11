@@ -76,20 +76,6 @@ export class User {
   @Prop({
     type: Number,
     default: null,
-    comment: '最后登录时间',
-  })
-  last_login_at: number;
-
-  @Prop({
-    type: String,
-    default: '',
-    comment: '最后登录IP',
-  })
-  last_login_ip: string;
-
-  @Prop({
-    type: Number,
-    default: null,
   })
   register_at: number;
 
@@ -126,10 +112,6 @@ export class User {
 
   getUpdatedAtDate(): Date {
     return new Date(this.updated_at * 1000);
-  }
-
-  getLastLoginAtDate(): Date | null {
-    return this.last_login_at ? new Date(this.last_login_at * 1000) : null;
   }
 
   getDeletedAtDate(): Date | null {
