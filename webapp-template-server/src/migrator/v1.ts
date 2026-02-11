@@ -641,8 +641,8 @@ export async function v1() {
       permissions.map((perm) => ({
         ...perm,
         status: PermissionStatus.ENABLED,
-        created_at: Math.floor(Date.now() / 1000),
-        updated_at: Math.floor(Date.now() / 1000),
+        created_at: Date.now(),
+        updated_at: Date.now(),
       })),
     );
     console.log(`✅ 已插入 ${permissionDocs.length} 个权限`);
@@ -663,8 +663,8 @@ export async function v1() {
         ...roleData,
         status: 1, // 启用状态
         permission_ids: permissionIds,
-        created_at: Math.floor(Date.now() / 1000),
-        updated_at: Math.floor(Date.now() / 1000),
+        created_at: Date.now(),
+        updated_at: Date.now(),
       });
 
       await roleDoc.save();
@@ -686,23 +686,25 @@ export async function v1() {
       openid: defaultAdminUserOpenid,
     });
 
+    const defaultAdminUserInfo = {
+      openid: defaultAdminUserOpenid,
+      nickname: '超级管理员',
+      phone: '19157691370',
+      username: 'root',
+      password: 'root',
+      status: 1,
+      role_ids: [superAdminRole?._id],
+      created_at: Date.now(),
+      updated_at: Date.now(),
+    }
+
     if (superAdminRole && !defaultAdminUser) {
-      const adminUser = new UserModel({
-        openid: defaultAdminUserOpenid,
-        nickname: '超级管理员',
-        phone: '19157691370',
-        username: 'root',
-        password: 'root',
-        status: 1,
-        role_ids: [superAdminRole._id],
-        created_at: Math.floor(Date.now() / 1000),
-        updated_at: Math.floor(Date.now() / 1000),
-      });
+      const adminUser = new UserModel(defaultAdminUserInfo);
 
       await adminUser.save();
       console.log('✅ 已创建默认管理员用户');
       console.log(`   OpenID: ${defaultAdminUserOpenid}`);
-      console.log(`   手机号: 19157691370`);
+      console.log(`   手机号: ${defaultAdminUserInfo.phone}`);
     }
 
     console.log('\n🎉 数据初始化完成！');

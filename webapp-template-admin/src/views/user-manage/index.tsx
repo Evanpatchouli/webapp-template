@@ -16,9 +16,10 @@ import {
   RedoOutlined,
   WechatOutlined,
 } from "@ant-design/icons";
+import type { PaginatedResult } from "@/types/resp";
 
 export default function UserManageView() {
-  const [users, setUsers] = useState<any[]>([]);
+  const [userPage, setUserPage] = useState<PaginatedResult<Record<string, any>>>([]);
 
   const handleMenuClick: MenuProps["onClick"] = (e) => {
     message.info("Click on menu item.");
@@ -98,13 +99,22 @@ export default function UserManageView() {
 
   useEffect(() => {
     UserManageAPI.queryUserPage({ page: 1, size: 10 }).then((resp) => {
-      setUsers(resp.getData()?.list || []);
+      setUserPage(resp.getData() || {
+        list: [],
+        total: 0,
+        page: 1,
+        size: 10,
+        totalPages: 1,
+      });
     });
   }, []);
   return (
     <div>
-      <h1>UserManage</h1>
-      <Table dataSource={users} columns={columns} />
+      <Table dataSource={userPage.list} columns={columns} pagination={{
+        pageSize: userPage.size,
+        total: userPage.total,
+        current: userPage.page,
+      }} />
     </div>
   );
 }

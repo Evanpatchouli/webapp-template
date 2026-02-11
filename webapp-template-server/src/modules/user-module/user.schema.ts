@@ -8,7 +8,7 @@ export type UserDocument = HydratedDocument<User>;
   timestamps: {
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    currentTime: () => Math.floor(Date.now() / 1000),
+    currentTime: () => Date.now(),
   },
   collection: 'users',
   toJSON: { virtuals: true }, // 启用虚拟字段的JSON序列化
@@ -88,13 +88,13 @@ export class User {
   // 手动定义时间戳字段
   @Prop({
     type: Number,
-    default: () => Math.floor(Date.now() / 1000),
+    default: () => Date.now(),
   })
   created_at: number;
 
   @Prop({
     type: Number,
-    default: () => Math.floor(Date.now() / 1000),
+    default: () => Date.now(),
   })
   updated_at: number;
 
@@ -182,8 +182,8 @@ UserSchema.statics.softDelete = function (id: string | Types.ObjectId) {
   return this.findByIdAndUpdate(
     id,
     {
-      deleted_at: Math.floor(Date.now() / 1000),
-      updated_at: Math.floor(Date.now() / 1000),
+      deleted_at: Date.now(),
+      updated_at: Date.now(),
     },
     { new: true },
   );

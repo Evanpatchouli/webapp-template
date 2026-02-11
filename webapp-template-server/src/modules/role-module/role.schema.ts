@@ -8,7 +8,7 @@ export type RoleDocument = HydratedDocument<Role>;
   timestamps: {
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    currentTime: () => Math.floor(Date.now() / 1000), // 存储为时间戳（秒）
+    currentTime: () => Date.now(), // 存储为时间戳（毫秒）
   }, // 自动管理 createdAt 和 updatedAt
   collection: 'roles', // 明确指定集合名
   toJSON: { virtuals: true }, // 启用虚拟字段的JSON序列化

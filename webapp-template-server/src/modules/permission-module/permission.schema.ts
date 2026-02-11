@@ -29,7 +29,7 @@ export enum ApiMethod {
   timestamps: {
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    currentTime: () => Math.floor(Date.now() / 1000), // 存储为时间戳（秒）
+    currentTime: () => Date.now(), // 存储为时间戳（毫秒）
   },
   collection: 'permissions',
   toJSON: { virtuals: true },

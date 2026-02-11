@@ -71,7 +71,7 @@ export class MigrationManager {
     await MigrationModel.create({
       version,
       name,
-      executed_at: Math.floor(Date.now() / 1000),
+      executed_at: Date.now(),
       execution_time: executionTime,
       status,
       error_message: errorMessage,
