@@ -20,7 +20,6 @@ export class User {
 
   @Prop({
     type: String,
-    required: [true, 'openid不能为空'],
     unique: true,
     trim: true,
     maxlength: [100, 'openid长度不能超过100个字符'],
