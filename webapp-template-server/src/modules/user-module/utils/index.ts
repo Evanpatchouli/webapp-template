@@ -10,6 +10,7 @@ export const generateToken = (
   openid: Maybe<string>,
   phone: Maybe<string>,
   username: Maybe<string>,
+  email: Maybe<string>,
   roles: string[],
   permissions: string[],
 ) => {
@@ -18,6 +19,7 @@ export const generateToken = (
     openid,
     phone,
     username,
+    email,
     roles: roles || [],
     permissions: permissions || [],
   } as AuthTokenPayload;

@@ -13,6 +13,10 @@ export class UserModel {
     this.model = model;
   }
 
+  getModel() {
+    return this.model;
+  }
+
   async create(
     identity: Partial<UserIdentity> & { password?: string },
     ip: string,
@@ -43,6 +47,10 @@ export class UserModel {
 
   async findByPhone(phone: string) {
     return this.model.findOne({ phone }).exec();
+  }
+
+  async findByEmail(email: string) {
+    return this.model.findOne({ email }).exec();
   }
 
   async pushRole(openid: string, role_id: string) {
@@ -80,9 +88,5 @@ export class UserModel {
       size,
       totalPages: Math.ceil(total / size),
     };
-  }
-
-  getModel() {
-    return this.model;
   }
 }

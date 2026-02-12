@@ -11,6 +11,7 @@ export class UserLoginEvent implements BaseEvent {
   phone?: Maybe<string>;
   username?: Maybe<string>;
   nickname?: Maybe<string>;
+  email?: Maybe<string>;
   token: string;
   roles: string[];
   permissions: string[];
@@ -21,6 +22,7 @@ export class UserLoginEvent implements BaseEvent {
     this.openid = loginResult.openid;
     this.phone = loginResult.phone;
     this.username = loginResult.username;
+    this.email = loginResult.email;
     this.nickname = loginResult.nickname;
     this.token = loginResult.token;
     this.roles = loginResult.roles;
@@ -34,6 +36,7 @@ export class UserLoginEvent implements BaseEvent {
       phone: this.phone,
       username: this.username,
       nickname: this.nickname,
+      email: this.email,
       token: this.token,
       roles: this.roles,
       permissions: this.permissions,

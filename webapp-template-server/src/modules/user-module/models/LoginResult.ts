@@ -6,6 +6,7 @@ export interface ILoginResult {
   openid?: Maybe<string>;
   phone?: Maybe<string>;
   username?: Maybe<string>;
+  email?: Maybe<string>;
   token: string;
   roles: string[];
   permissions: string[];
@@ -17,6 +18,7 @@ export class LoginResult implements ILoginResult {
   openid?: Maybe<string>;
   phone?: Maybe<string>;
   username?: Maybe<string>;
+  email?: Maybe<string>;
   token: string;
   roles: string[] = [];
   permissions: string[] = [];
@@ -52,6 +54,11 @@ export class LoginResult implements ILoginResult {
 
   Username(username: Maybe<string>) {
     this.username = username || null;
+    return this;
+  }
+
+  Email(email: Maybe<string>) {
+    this.email = email || null;
     return this;
   }
 

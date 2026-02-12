@@ -13,6 +13,7 @@ import {
   PhoneLoginForm,
   OpenidLoginForm,
   GeneralLoginForm,
+  EmailLoginForm,
 } from './models/LoginForm';
 import Resp from '@/common/models/Resp';
 import { ILoginResult, LoginResult } from './models/LoginResult';
@@ -131,13 +132,34 @@ export class UserController {
   ): Promise<Resp<ILoginResult>> {
     const { phone, code } = form;
 
-    if (!this.optService.verify(phone, code, OPTWay.LOGIN)) {
+    if (!this.optService.verify(phone, code, OPTWay.PHONE_LOGIN)) {
       throw new BadRequestException('验证码错误'); // TODO: 增加验证码错误次数限制
     }
 
     const last_login_at = Date.now();
     const result = await this.userService.loginByPhone(
       phone,
+      ip,
+      last_login_at,
+    );
+    return Resp.success(result);
+  }
+
+  @Tag('电子邮件 + 邮件验证码登录')
+  @Post('/login/email')
+  async loginByEmail(
+    @Body() form: EmailLoginForm,
+    @Ip() ip: string,
+  ): Promise<Resp<ILoginResult>> {
+    const { email, code } = form;
+
+    if (!this.optService.verify(email, code, OPTWay.PHONE_LOGIN)) {
+      throw new BadRequestException('验证码错误'); // TODO: 增加验证码错误次数限制
+    }
+
+    const last_login_at = Date.now();
+    const result = await this.userService.loginByEmail(
+      email,
       ip,
       last_login_at,
     );

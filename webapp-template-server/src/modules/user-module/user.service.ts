@@ -33,6 +33,10 @@ export class UserService {
     return await this.loginService.usePhone(phone, ip, last_login_at);
   }
 
+  async loginByEmail(email: string, ip: string, last_login_at: number) {
+    return await this.loginService.useEmail(email, ip, last_login_at);
+  }
+
   /**
    * 注册成功后默认登录
    */

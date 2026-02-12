@@ -12,6 +12,7 @@ export interface ILoginResult {
   phone?: Maybe<string>;
   username?: Maybe<string>;
   nickname?: Maybe<string>;
+  email?: Maybe<string>;
   token: string;
   roles: string[];
   permissions: string[];

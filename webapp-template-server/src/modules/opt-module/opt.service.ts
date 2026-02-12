@@ -9,17 +9,24 @@ export default class OPTService {
   constructor() {}
 
   generate(
-    phone: string,
+    key: string,
     way: ValuesOf<typeof OPTWay>,
     expireIn?: number | TimeUnitString,
   ) {
-    const opt = createOPT('5m');
-    // TODO: send opt to phone
-    cache.set(`${way}::${phone}`, opt.code, opt.expiry);
+    const opt = createOPT(expireIn || '5m');
+    cache.set(`${way}::${key}`, opt.code, opt.expiry);
     return opt;
   }
 
-  verify(phone: string, code: string, way: ValuesOf<typeof OPTWay>) {
-    return code === cache.get(`${way}::${phone}`);
+  verify(key: string, code: string, way: ValuesOf<typeof OPTWay>) {
+    return code === cache.get(`${way}::${key}`);
+  }
+
+  generatePhoneLoginOPT(phone: string) {
+    return this.generate(phone, OPTWay.PHONE_LOGIN, '5m');
+  }
+
+  generateEmailLoginOPT(email: string) {
+    return this.generate(email, OPTWay.PHONE_LOGIN, '30m');
   }
 }

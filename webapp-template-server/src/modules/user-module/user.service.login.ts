@@ -41,12 +41,14 @@ export class UserLoginService {
         user.openid,
         user.phone,
         user.username,
+        user.email,
         roles,
         permissions,
       );
       const nickname = user.nickname;
       const phone = user.phone;
       const username = user.username;
+      const email = user.email;
 
       this.emitter.emit(
         'user.login',
@@ -59,6 +61,7 @@ export class UserLoginService {
         .Openid(openid)
         .Phone(phone)
         .Username(username)
+        .Email(email)
         .Token(token)
         .Roles(roles)
         .Permissions(permissions);
@@ -80,12 +83,14 @@ export class UserLoginService {
       user.openid,
       user.phone,
       user.username,
+      user.email,
       roles,
       permissions,
     );
     const nickname = user.nickname;
     const phone = user.phone;
     const username = user.username;
+    const email = user.email;
 
     this.emitter.emit('user.created', new UserCreatedEvent(user.id));
     this.emitter.emit(
@@ -99,6 +104,7 @@ export class UserLoginService {
       .Openid(openid)
       .Phone(phone)
       .Username(username)
+      .Email(email)
       .Token(token)
       .Roles(roles)
       .Permissions(permissions);
@@ -119,6 +125,7 @@ export class UserLoginService {
       const user_id = user.id;
       const openid = user.openid;
       const phone = user.phone;
+      const email = user.email;
       const userRoles = await this.userRoleService.getRoles(user_id, {
         withPermission: true,
       });
@@ -132,6 +139,7 @@ export class UserLoginService {
         openid,
         phone,
         username,
+        email,
         roles,
         permissions,
       );
@@ -147,6 +155,7 @@ export class UserLoginService {
         .Openid(openid)
         .Phone(phone)
         .Username(username)
+        .Email(email)
         .Token(token)
         .Roles(roles)
         .Permissions(permissions);
@@ -171,6 +180,7 @@ export class UserLoginService {
       const user_id = user.id;
       const openid = user.openid;
       const username = user.username;
+      const email = user.email;
       const userRoles = await this.userRoleService.getRoles(user_id, {
         withPermission: true,
       });
@@ -184,6 +194,7 @@ export class UserLoginService {
         openid,
         phone,
         username,
+        email,
         roles,
         permissions,
       );
@@ -199,6 +210,7 @@ export class UserLoginService {
         .Openid(openid)
         .Phone(phone)
         .Username(username)
+        .Email(email)
         .Token(token)
         .Roles(roles)
         .Permissions(permissions);
@@ -210,6 +222,7 @@ export class UserLoginService {
     const user_id = user.id;
     const openid = user.openid;
     const username = user.username;
+    const email = user.email;
 
     // 分配普通用户角色
     await this.userRoleService.assignNormalUserRole(user.id);
@@ -229,6 +242,7 @@ export class UserLoginService {
       openid,
       phone,
       username,
+      email,
       roles,
       permissions,
     );
@@ -245,6 +259,103 @@ export class UserLoginService {
       .Openid(openid)
       .Phone(phone)
       .Username(username)
+      .Email(email)
+      .Token(token)
+      .Roles(roles)
+      .Permissions(permissions);
+  }
+
+  async useEmail(
+    email: string,
+    ip: string,
+    last_login_at: number,
+  ): Promise<ILoginResult> {
+    let user = await this.userModel.findByEmail(email);
+    if (user) {
+      const nickname = user.nickname;
+      const user_id = user.id;
+      const openid = user.openid;
+      const phone = user.phone;
+      const username = user.username;
+      const userRoles = await this.userRoleService.getRoles(user_id, {
+        withPermission: true,
+      });
+      const roles = userRoles.map((role) => role.role_code);
+      const permissions = userRoles
+        .map((role) => role.permissions!)
+        .flat()
+        .map((permission) => permission?.perm_code);
+      const token = generateToken(
+        user_id,
+        openid,
+        phone,
+        username,
+        email,
+        roles,
+        permissions,
+      );
+
+      this.emitter.emit(
+        'user.login',
+        new UserLoginEvent(user_id, ip, last_login_at, LoginTypes.PHONE),
+      );
+
+      return LoginResult.new()
+        .Id(user_id)
+        .Nickname(nickname)
+        .Openid(openid)
+        .Phone(phone)
+        .Username(username)
+        .Email(email)
+        .Token(token)
+        .Roles(roles)
+        .Permissions(permissions);
+    }
+    // 创建用户
+    user = await this.userModel.create({ email }, ip, last_login_at);
+
+    const nickname = user.nickname;
+    const user_id = user.id;
+    const openid = user.openid;
+    const username = user.username;
+    const phone = user.phone;
+
+    // 分配普通用户角色
+    await this.userRoleService.assignNormalUserRole(user.id);
+    // 查询角色和权限
+    const userRoles = await this.userRoleService.getRoles(user.id, {
+      withPermission: true,
+    });
+
+    const roles = userRoles.map((role) => role.role_code);
+    const permissions = userRoles
+      .map((role) => role.permissions!)
+      .flat()
+      .map((permission) => permission?.perm_code);
+
+    const token = generateToken(
+      user_id,
+      openid,
+      phone,
+      username,
+      email,
+      roles,
+      permissions,
+    );
+
+    this.emitter.emit('user.created', new UserCreatedEvent(user.id));
+    this.emitter.emit(
+      'user.login',
+      new UserLoginEvent(user_id, ip, last_login_at, LoginTypes.PHONE),
+    );
+
+    return LoginResult.new()
+      .Id(user_id)
+      .Nickname(nickname)
+      .Openid(openid)
+      .Phone(phone)
+      .Username(username)
+      .Email(email)
       .Token(token)
       .Roles(roles)
       .Permissions(permissions);

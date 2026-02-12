@@ -19,7 +19,9 @@ import {
 import type { PaginatedResult } from "@/types/resp";
 
 export default function UserManageView() {
-  const [userPage, setUserPage] = useState<PaginatedResult<Record<string, any>>>([]);
+  const [userPage, setUserPage] = useState<
+    PaginatedResult<Record<string, any>>
+  >([]);
 
   const handleMenuClick: MenuProps["onClick"] = (info) => {
     message.info("Click on menu item.");
@@ -44,11 +46,6 @@ export default function UserManageView() {
       danger: true,
     },
   ];
-
-  const menuProps = {
-    items,
-    onClick: handleMenuClick,
-  };
 
   const columns: ColumnsType<Record<string, any>> = [
     {
@@ -87,34 +84,49 @@ export default function UserManageView() {
     },
     {
       title: "操作",
-      render: (_, record) => (
-        <Flex align="center" gap="small">
-          <Button>详情</Button>
-          <Button>禁用</Button>
-          <Dropdown.Button menu={menuProps}>更多</Dropdown.Button>
-        </Flex>
-      ),
+      render: (_, record) => {
+        return (
+          <Flex align="center" gap="small">
+            <Button>详情</Button>
+            <Button>禁用</Button>
+            <Dropdown.Button
+              menu={{
+                items,
+                onClick: handleMenuClick,
+              }}
+            >
+              更多
+            </Dropdown.Button>
+          </Flex>
+        );
+      },
     },
   ];
 
   useEffect(() => {
     UserManageAPI.queryUserPage({ page: 1, size: 10 }).then((resp) => {
-      setUserPage(resp.getData() || {
-        list: [],
-        total: 0,
-        page: 1,
-        size: 10,
-        totalPages: 1,
-      });
+      setUserPage(
+        resp.getData() || {
+          list: [],
+          total: 0,
+          page: 1,
+          size: 10,
+          totalPages: 1,
+        },
+      );
     });
   }, []);
   return (
     <div>
-      <Table dataSource={userPage.list} columns={columns} pagination={{
-        pageSize: userPage.size,
-        total: userPage.total,
-        current: userPage.page,
-      }} />
+      <Table
+        dataSource={userPage.list}
+        columns={columns}
+        pagination={{
+          pageSize: userPage.size,
+          total: userPage.total,
+          current: userPage.page,
+        }}
+      />
     </div>
   );
 }

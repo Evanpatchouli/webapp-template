@@ -21,6 +21,13 @@ export class PhoneLoginForm {
   code: string;
 }
 
+export class EmailLoginForm {
+  @IsNotEmpty()
+  email: string;
+  @IsNotEmpty()
+  code: string;
+}
+
 export class GeneralLoginForm {
   username?: string;
   password?: string;
@@ -29,5 +36,6 @@ export class GeneralLoginForm {
   openid?: string;
 
   phone?: string;
+  email?: string;
   code?: string;
 }

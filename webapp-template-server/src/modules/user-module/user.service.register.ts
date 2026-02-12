@@ -45,6 +45,7 @@ export class UserRegisterService {
       const user_id = user.id;
       const openid = user.openid;
       const phone = user.phone;
+      const email = user.email;
 
       // 分配普通用户角色
       await this.userRoleService.assignNormalUserRole(user_id);
@@ -64,6 +65,7 @@ export class UserRegisterService {
         openid,
         phone,
         username,
+        email,
         roles,
         permissions,
       );
@@ -80,6 +82,7 @@ export class UserRegisterService {
         .Openid(openid)
         .Phone(phone)
         .Username(username)
+        .Email(email)
         .Token(token)
         .Roles(roles)
         .Permissions(permissions);

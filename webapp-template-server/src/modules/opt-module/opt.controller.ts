@@ -1,20 +1,29 @@
-import { Controller, Get, Inject, Session } from '@nestjs/common';
+import { Controller, Get, Inject, Param } from '@nestjs/common';
 import Resp from '../../common/models/Resp';
 import { Tag } from '../../decorators/tag.decorator';
-import type { SessionState } from '@/types';
 import OptService from './opt.service';
-import { CaptchaWay } from '@/constants/captcha.constant';
-import { OPTWay } from '@/constants/opt.constant';
 
-@Tag('短信验证码')
+@Tag('一次性验证码')
 @Controller('opt')
 export class OPTController {
   constructor(@Inject() private optService: OptService) {}
 
-  @Get('/login')
+  @Get('/login/phone/:phone')
   @Tag('获取登录短信验证码')
-  get(@Session() session: SessionState): Resp<any> {
-    const data = this.optService.generate(CaptchaWay.LOGIN, OPTWay.LOGIN);
+  getPhoneLoginOPT(@Param('phone') phone: string): Resp<any> {
+    if (!phone) {
+      return Resp.badRequest('手机号不能为空');
+    }
+    const data = this.optService.generatePhoneLoginOPT(phone);
+    return Resp.success(data);
+  }
+  @Get('/login/phone/:email')
+  @Tag('获取登录短信验证码')
+  getEmailLoginOPT(@Param('email') email: string): Resp<any> {
+    if (!email) {
+      return Resp.badRequest('邮箱不能为空');
+    }
+    const data = this.optService.generateEmailLoginOPT(email);
     return Resp.success(data);
   }
 }
