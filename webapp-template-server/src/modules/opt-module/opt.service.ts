@@ -1,12 +1,15 @@
 import cache from '@/cache';
 import { OPTWay } from '@/constants/opt.constant';
 import { TimeUnitString, ValuesOf } from '@/types';
-import { Injectable, Session } from '@nestjs/common';
+import { Inject, Injectable, Session } from '@nestjs/common';
 import { createOPT } from './opt.util';
+import EmailService from '../email-module/email.service';
 
 @Injectable()
 export default class OPTService {
-  constructor() {}
+  constructor(
+    @Inject() private emailService: EmailService
+  ) { }
 
   /**
    * 生成 6 位 OPT（一次性验证码）
@@ -29,7 +32,9 @@ export default class OPTService {
     return this.generate(phone, OPTWay.PHONE_LOGIN, '5m');
   }
 
-  generateEmailLoginOPT(email: string) {
-    return this.generate(email, OPTWay.EMAIL_LOGIN, '30m');
+  async generateEmailLoginOPT(email: string) {
+    const opt = this.generate(email, OPTWay.EMAIL_LOGIN, '30m');
+    await this.emailService.sendOptEmail(email, opt.code, OPTWay.EMAIL_LOGIN);
+    return opt;
   }
 }

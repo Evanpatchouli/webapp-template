@@ -40,7 +40,7 @@ export class UserController {
     @Inject() private readonly userService: UserService,
     @Inject() private readonly captchaService: CaptchaService,
     @Inject() private readonly optService: OPTService,
-  ) {}
+  ) { }
 
   @Post('/login')
   async login(
@@ -153,7 +153,7 @@ export class UserController {
   ): Promise<Resp<ILoginResult>> {
     const { email, code } = form;
 
-    if (!this.optService.verify(email, code, OPTWay.PHONE_LOGIN)) {
+    if (!this.optService.verify(email, code, OPTWay.EMAIL_LOGIN)) {
       throw new BadRequestException('验证码错误'); // TODO: 增加验证码错误次数限制
     }
 

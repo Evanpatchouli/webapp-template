@@ -7,7 +7,7 @@ import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 
 const transporter = nodemailer.createTransport({
-  host: 'http://smtp.qq.com/', // SMTP服务器地址
+  host: 'smtp.qq.com', // SMTP服务器地址
   port: 465, // SMTP端口
   secure: true, // 使用SSL/TLS
   auth: {
@@ -22,7 +22,7 @@ const EmailSubjectMap = {
 
 @Injectable()
 export default class EmailService {
-  constructor() {}
+  constructor() { }
 
   async sendEmail(to: string, options: Omit<Mail.Options, 'from' | 'to'>) {
     await transporter.sendMail({
@@ -40,7 +40,7 @@ export default class EmailService {
     if (!to) throw new IllegalArgument('接收者邮箱地址不能为空');
     await this.sendEmail(to, {
       subject: EmailSubjectMap[optType],
-      text: `您正在通过邮箱登录 Webapp，您的${optType}验证码为：${opt}，30分钟内有效，请勿将验证码告知他人，如不是本人请忽略本邮件。`,
+      text: `您正在通过邮箱登录 Webapp，您的验证码为：${opt}，30分钟内有效，请勿将验证码告知他人，如不是本人请忽略本邮件。`,
     });
   }
 }

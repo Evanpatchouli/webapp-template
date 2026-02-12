@@ -13,6 +13,7 @@ import { GlobalExcenptionCatchProvider } from './exception/filters';
 import { AuthProvider } from './auth/auth.provider';
 import { CaptchaModule } from './modules/captcha-module';
 import { OPTModule } from './modules/opt-module';
+import { EmailModule } from './modules/email-module';
 
 @Module({
   imports: [
@@ -26,11 +27,13 @@ import { OPTModule } from './modules/opt-module';
     AdminModule,
     CaptchaModule,
     OPTModule,
+    EmailModule
   ],
   controllers: [AppController],
   providers: [AuthProvider, AppService, GlobalExcenptionCatchProvider],
   exports: [],
 })
+
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
