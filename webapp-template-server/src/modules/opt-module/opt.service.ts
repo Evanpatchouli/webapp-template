@@ -8,6 +8,9 @@ import { createOPT } from './opt.util';
 export default class OPTService {
   constructor() {}
 
+  /**
+   * 生成 6 位 OPT（一次性验证码）
+   */
   generate(
     key: string,
     way: ValuesOf<typeof OPTWay>,
@@ -27,6 +30,6 @@ export default class OPTService {
   }
 
   generateEmailLoginOPT(email: string) {
-    return this.generate(email, OPTWay.PHONE_LOGIN, '30m');
+    return this.generate(email, OPTWay.EMAIL_LOGIN, '30m');
   }
 }
