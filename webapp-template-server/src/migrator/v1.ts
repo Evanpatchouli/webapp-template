@@ -501,29 +501,29 @@ const roles: RoleData[] = [
     permission_codes: [
       // 系统管理
       'SYSTEM_MANAGE',
-      
+
       // API管理
       'API_MANAGE',
       'API_DOC',
       'API_TEST',
       'API_DEBUG',
-      
+
       // 系统监控
       'SYSTEM_MONITOR',
       'MONITOR_SERVER',
       'MONITOR_DATABASE',
       'MONITOR_LOG',
-      
+
       // 应用数据管理（只读）
       'DATA_MANAGE',
       'DATA_STATISTICS',
       'STATS_VIEW',
-      
+
       // 用户管理（只读）
       'USER_MANAGE',
       'USER_LIST',
       'USER_DETAIL',
-      
+
       // API接口权限
       'API_USER_LIST',
       'API_MONITOR_GET',
@@ -550,18 +550,18 @@ const roles: RoleData[] = [
       'DATA_STATISTICS',
       'STATS_VIEW',
       'STATS_EXPORT',
-      
+
       // 系统监控
       'SYSTEM_MONITOR',
       'MONITOR_SERVER',
       'MONITOR_DATABASE',
       'MONITOR_LOG',
-      
+
       // 内容管理
       'CONTENT_MANAGE',
       'CONTENT_AUDIT',
       'CONTENT_DELETE',
-      
+
       // API接口权限
       'API_DATA_BACKUP',
       'API_DATA_CLEAN',
@@ -619,10 +619,7 @@ const roles: RoleData[] = [
     description: '未登录游客用户',
     is_system: false,
     sort_order: 30,
-    permission_codes: [
-      'MOMENT_MANAGE',
-      'MOMENT_LIKE',
-    ],
+    permission_codes: ['MOMENT_MANAGE', 'MOMENT_LIKE'],
   },
 ];
 
@@ -636,87 +633,83 @@ export async function v1() {
   await RoleModel.deleteMany({});
   console.log('🗑️  已清空现有权限和角色数据');
 
-    // 插入权限数据
-    const permissionDocs = await PermissionModel.insertMany(
-      permissions.map((perm) => ({
-        ...perm,
-        status: PermissionStatus.ENABLED,
-        created_at: Date.now(),
-        updated_at: Date.now(),
-      })),
-    );
-    console.log(`✅ 已插入 ${permissionDocs.length} 个权限`);
-
-    // 创建权限编码到ID的映射
-    const permCodeToId = new Map<string, Types.ObjectId>();
-    permissionDocs.forEach((doc) => {
-      permCodeToId.set(doc.perm_code, doc._id);
-    });
-
-    // 插入角色数据
-    for (const roleData of roles) {
-      const permissionIds = roleData.permission_codes
-        .map((code) => permCodeToId.get(code))
-        .filter((id) => id !== undefined);
-
-      const roleDoc = new RoleModel({
-        ...roleData,
-        status: 1, // 启用状态
-        permission_ids: permissionIds,
-        created_at: Date.now(),
-        updated_at: Date.now(),
-      });
-
-      await roleDoc.save();
-      console.log(
-        `✅ 已创建角色: ${roleData.role_name} (${roleData.role_code})`,
-      );
-      console.log(`   包含 ${permissionIds.length} 个权限`);
-    }
-
-    // 创建默认管理员用户（可选）
-    const UserModel = mongoose.model('User', UserSchema);
-    const superAdminRole = await RoleModel.findOne({
-      role_code: 'SUPER_ADMIN',
-    });
-
-    const defaultAdminUserOpenid = 'ofSEA2KzGjX1IGcUFASZWgln9Lnw';
-
-    const defaultAdminUser = await UserModel.findOne({
-      openid: defaultAdminUserOpenid,
-    });
-
-    const defaultAdminUserInfo = {
-      openid: defaultAdminUserOpenid,
-      nickname: '超级管理员',
-      phone: '19157691370',
-      username: 'root',
-      password: 'root',
-      status: 1,
-      role_ids: [superAdminRole?._id],
+  // 插入权限数据
+  const permissionDocs = await PermissionModel.insertMany(
+    permissions.map((perm) => ({
+      ...perm,
+      status: PermissionStatus.ENABLED,
       created_at: Date.now(),
       updated_at: Date.now(),
-    }
+    })),
+  );
+  console.log(`✅ 已插入 ${permissionDocs.length} 个权限`);
 
-    if (superAdminRole && !defaultAdminUser) {
-      const adminUser = new UserModel(defaultAdminUserInfo);
+  // 创建权限编码到ID的映射
+  const permCodeToId = new Map<string, Types.ObjectId>();
+  permissionDocs.forEach((doc) => {
+    permCodeToId.set(doc.perm_code, doc._id);
+  });
 
-      await adminUser.save();
-      console.log('✅ 已创建默认管理员用户');
-      console.log(`   OpenID: ${defaultAdminUserOpenid}`);
-      console.log(`   手机号: ${defaultAdminUserInfo.phone}`);
-    }
+  // 插入角色数据
+  for (const roleData of roles) {
+    const permissionIds = roleData.permission_codes
+      .map((code) => permCodeToId.get(code))
+      .filter((id) => id !== undefined);
 
-    console.log('\n🎉 数据初始化完成！');
-    console.log('📊 统计信息：');
-    console.log(`   - 权限数量: ${permissionDocs.length}`);
-    console.log(`   - 角色数量: ${roles.length}`);
+    const roleDoc = new RoleModel({
+      ...roleData,
+      status: 1, // 启用状态
+      permission_ids: permissionIds,
+      created_at: Date.now(),
+      updated_at: Date.now(),
+    });
 
-    // 显示角色权限统计
-    const allRoles = await RoleModel.find().populate('permission_ids');
-    for (const role of allRoles) {
-      console.log(
-        `   - ${role.role_name}: ${role.permission_ids.length} 个权限`,
-      );
-    }
+    await roleDoc.save();
+    console.log(`✅ 已创建角色: ${roleData.role_name} (${roleData.role_code})`);
+    console.log(`   包含 ${permissionIds.length} 个权限`);
+  }
+
+  // 创建默认管理员用户（可选）
+  const UserModel = mongoose.model('User', UserSchema);
+  const superAdminRole = await RoleModel.findOne({
+    role_code: 'SUPER_ADMIN',
+  });
+
+  const defaultAdminUserOpenid = 'ofSEA2KzGjX1IGcUFASZWgln9Lnw';
+
+  const defaultAdminUser = await UserModel.findOne({
+    openid: defaultAdminUserOpenid,
+  });
+
+  const defaultAdminUserInfo = {
+    openid: defaultAdminUserOpenid,
+    nickname: '超级管理员',
+    phone: '19157691370',
+    username: 'root',
+    password: 'root',
+    status: 1,
+    role_ids: [superAdminRole?._id],
+    created_at: Date.now(),
+    updated_at: Date.now(),
+  };
+
+  if (superAdminRole && !defaultAdminUser) {
+    const adminUser = new UserModel(defaultAdminUserInfo);
+
+    await adminUser.save();
+    console.log('✅ 已创建默认管理员用户');
+    console.log(`   OpenID: ${defaultAdminUserOpenid}`);
+    console.log(`   手机号: ${defaultAdminUserInfo.phone}`);
+  }
+
+  console.log('\n🎉 数据初始化完成！');
+  console.log('📊 统计信息：');
+  console.log(`   - 权限数量: ${permissionDocs.length}`);
+  console.log(`   - 角色数量: ${roles.length}`);
+
+  // 显示角色权限统计
+  const allRoles = await RoleModel.find().populate('permission_ids');
+  for (const role of allRoles) {
+    console.log(`   - ${role.role_name}: ${role.permission_ids.length} 个权限`);
+  }
 }

@@ -1,6 +1,7 @@
 import { MigrationManager } from '../src/migrator/migration-manager';
-import { v1 } from '../src/migrator/v1';
 import config from '../src/migrator/config';
+import { v1 } from '../src/migrator/v1';
+import { v2 } from '../src/migrator/v2';
 
 // 解析命令行参数
 const args = process.argv.slice(2);
@@ -19,6 +20,12 @@ async function runMigration() {
       version: 'v1',
       name: '初始化权限和角色数据',
       up: v1,
+    });
+
+    manager.register({
+      version: 'v2',
+      name: '更新管理员邮箱',
+      up: v2,
     });
 
     // 运行迁移

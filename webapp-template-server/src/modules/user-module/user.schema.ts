@@ -53,6 +53,17 @@ export class User {
 
   @Prop({
     type: String,
+    unique: true,
+    trim: true,
+    match: [
+      /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+      '请输入正确的邮箱地址',
+    ],
+  })
+  email: string;
+
+  @Prop({
+    type: String,
     trim: true,
     maxlength: [100, '昵称长度不能超过100个字符'],
   })

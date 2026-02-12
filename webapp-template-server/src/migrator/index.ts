@@ -1,8 +1,9 @@
 import { MigrationManager } from './migration-manager';
-import { v1 } from './v1';
 import AppConfig from '../app.config';
 import { logger } from '@/common/logger';
 import { sleep } from '@/utils/sleep';
+import { v1 } from './v1';
+import { v2 } from './v2';
 
 const MigratorConfig = AppConfig.Migrator;
 
@@ -22,6 +23,12 @@ export const migrate = async () => {
       version: 'v1',
       name: '初始化权限和角色数据',
       up: v1,
+    });
+
+    manager.register({
+      version: 'v2',
+      name: '更新管理员邮箱',
+      up: v2,
     });
 
     // 连接（实际上会跳过，使用已有连接）
