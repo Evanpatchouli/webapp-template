@@ -1,3 +1,4 @@
+import { SUCCESS_CODE } from "@/constants";
 import type { Nullable } from "@/types";
 
 export default class Resp<T = unknown> {
@@ -24,6 +25,6 @@ export default class Resp<T = unknown> {
   }
 
   public isSuccess(): boolean {
-    return this.code === 0;
+    return this.code === SUCCESS_CODE;
   }
 }

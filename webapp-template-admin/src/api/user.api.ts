@@ -1,6 +1,7 @@
 import type {
   AccountLoginForm,
   AccountRegisterForm,
+  EmailLoginForm,
   ILoginResult,
   IRegisterResult,
 } from "@/types/user";
@@ -15,3 +16,6 @@ export const accountLogin = (
 export const accountRegister = (
   data: AccountRegisterForm,
 ): Promise<Resp<IRegisterResult>> => appRequest.post("/register/account", data);
+
+export const emailLogin = (data: EmailLoginForm): Promise<Resp<ILoginResult>> =>
+  appRequest.post("/login/email", data);

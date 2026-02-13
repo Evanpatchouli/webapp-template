@@ -21,7 +21,13 @@ import type { PaginatedResult } from "@/types/resp";
 export default function UserManageView() {
   const [userPage, setUserPage] = useState<
     PaginatedResult<Record<string, any>>
-  >([]);
+  >({
+    list: [],
+    total: 0,
+    page: 1,
+    size: 10,
+    totalPages: 1,
+  });
 
   const handleMenuClick: MenuProps["onClick"] = (info) => {
     message.info("Click on menu item.");

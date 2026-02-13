@@ -14,7 +14,10 @@ const defaultOnError = () => message.error("验证码获取失败");
 
 export default function useCaptcha(
   way: ValuesOf<typeof CaptchaWay>,
-  { onSuccess = defaultOnSuccess, onError = defaultOnError }: UseCaptchaOptions = {
+  {
+    onSuccess = defaultOnSuccess,
+    onError = defaultOnError,
+  }: UseCaptchaOptions = {
     onSuccess: defaultOnSuccess,
     onError: defaultOnError,
   },
@@ -24,11 +27,13 @@ export default function useCaptcha(
   const fetchCaptcha = useCallback(async () => {
     try {
       const res = await API.getCaptcha(way);
-      if (res.code === "SUCCESS") {
-        setCaptchaBase64(res.data || "");
-        return onSuccess(res.data || "");
+      console.log(res);
+      if (res.isSuccess()) {
+        setCaptchaBase64(res.getData() || "");
+        return onSuccess(res.getData() || "");
+      } else {
+        throw new Error(res.getMessage() || "服务异常");
       }
-      throw new Error(res.message || "服务异常");
     } catch (err) {
       console.error(err as Error);
       onError?.(err as Error);

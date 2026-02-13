@@ -20,4 +20,14 @@ export interface ILoginResult {
 
 export type AccountRegisterForm = AccountLoginForm;
 
+export interface PhoneLoginForm {
+  phone: string;
+  code: string;
+}
+
+export interface EmailLoginForm {
+  email: string;
+  code: string;
+}
+
 export type IRegisterResult = ILoginResult;
