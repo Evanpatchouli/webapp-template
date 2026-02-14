@@ -4,6 +4,7 @@ import type {
   EmailLoginForm,
   ILoginResult,
   IRegisterResult,
+  PhoneLoginForm,
 } from "@/types/user";
 import { createAppRequest } from "./request";
 import type Resp from "@/models/Resp";
@@ -19,3 +20,6 @@ export const accountRegister = (
 
 export const emailLogin = (data: EmailLoginForm): Promise<Resp<ILoginResult>> =>
   appRequest.post("/login/email", data);
+
+export const phoneLogin = (data: PhoneLoginForm): Promise<Resp<ILoginResult>> =>
+  appRequest.post("/login/phone", data);

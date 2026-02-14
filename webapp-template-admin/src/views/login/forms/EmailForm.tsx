@@ -6,7 +6,6 @@ import * as OPTAPI from "@/api/opt.api";
 import * as UserAPI from "@/api/user.api";
 import { isValidEmail } from "@/utils/is.util";
 import { useNavigate } from "react-router";
-
 import { useEmit } from "@/hooks/useEmitter";
 import { UserLoginEvent } from "@/events/user.event";
 
