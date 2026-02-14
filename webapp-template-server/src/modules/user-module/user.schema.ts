@@ -20,7 +20,6 @@ export class User {
 
   @Prop({
     type: String,
-    unique: true,
     trim: true,
     maxlength: [100, 'openid长度不能超过100个字符'],
   })
@@ -28,7 +27,6 @@ export class User {
 
   @Prop({
     type: String,
-    unique: true,
     sparse: true,
     trim: true,
     match: [/^1[3-9]\d{9}$/, '请输入正确的手机号码'],
@@ -37,7 +35,6 @@ export class User {
 
   @Prop({
     type: String,
-    unique: true,
     trim: true,
     maxlength: [100, '用户名长度不能超过100个字符'],
   })
@@ -52,7 +49,6 @@ export class User {
 
   @Prop({
     type: String,
-    unique: true,
     trim: true,
     match: [
       /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
