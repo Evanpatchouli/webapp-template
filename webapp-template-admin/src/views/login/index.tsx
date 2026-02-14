@@ -80,7 +80,14 @@ const styles = createStyles({
   },
   leftSide: {
     paddingBlock: "20px",
-    backgroundColor: "#1677ff", // Antd 默认主色
+    background:
+      // "#1677ff", // 单色
+      // "linear-gradient(180deg, #4096ff 0%, #0958d9 100%)", // 从下到上渐变
+      // "linear-gradient(180deg, #0958d9 0%, #4096ff 100%)", // 从上到下渐变
+      "linear-gradient(90deg, #0958d9 0%, #4096ff 100%)", // 从左到右渐变
+      // "linear-gradient(-90deg, #0958d9 0%, #4096ff 100%)", // 从右到左渐变
+      // "linear-gradient(-45deg, #0958d9 0%, #4096ff 75%, #69b1ff 100%)", // 从右下到左上渐变
+    // "linear-gradient(135deg, #0958d9 0%, #4096ff 75%, #69b1ff 100%)", // 从左上到右下渐变
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
