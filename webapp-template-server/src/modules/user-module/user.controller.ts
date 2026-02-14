@@ -40,7 +40,7 @@ export class UserController {
     @Inject() private readonly userService: UserService,
     @Inject() private readonly captchaService: CaptchaService,
     @Inject() private readonly optService: OPTService,
-  ) { }
+  ) {}
 
   @Post('/login')
   async login(
@@ -50,16 +50,15 @@ export class UserController {
     @Ip() ip: string,
   ): Promise<Resp<ILoginResult>> {
     const { type } = query;
-    if (type === LoginTypes.OPENID) {
-      return this.loginByOpenid(form as OpenidLoginForm, ip);
-    }
-    if (type === LoginTypes.ACCOUNT) {
-      return this.loginByAccount(form as AccountLoginForm, session, ip);
-    }
-    if (type === LoginTypes.PHONE) {
-      return this.loginByPhone(form as PhoneLoginForm, ip);
-    }
-    return Resp.fail('不支持的登录方式');
+    const loginHandlers = {
+      [LoginTypes.OPENID]: () => this.loginByOpenid(form as OpenidLoginForm, ip),
+      [LoginTypes.ACCOUNT]: () => this.loginByAccount(form as AccountLoginForm, session, ip),
+      [LoginTypes.PHONE]: () => this.loginByPhone(form as PhoneLoginForm, ip),
+      [LoginTypes.EMAIL]: () => this.loginByEmail(form as EmailLoginForm, ip)
+    };
+
+    const handler = loginHandlers[type];
+    return handler ? handler() : Resp.fail('不支持的登录方式');
   }
 
   @Tag('微信扫码登录')
