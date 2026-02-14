@@ -7,6 +7,7 @@ import {
   message,
   Table,
   Tag,
+  Typography,
   type MenuProps,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -17,6 +18,9 @@ import {
   WechatOutlined,
 } from "@ant-design/icons";
 import type { PaginatedResult } from "@/types/resp";
+import { ifFalsy } from "@/utils/value";
+import USpan from "@/components/unimportant/uspan";
+import UA from "@/components/unimportant/ua";
 
 export default function UserManageView() {
   const [userPage, setUserPage] = useState<
@@ -59,15 +63,17 @@ export default function UserManageView() {
       dataIndex: "nickname",
       fixed: "left",
       width: 200,
-      render: (text) => <a>{text}</a>,
+      render: (text) => (text ? <a>{text}</a> : <UA>未设置昵称</UA>),
     },
     {
       title: "账号",
       dataIndex: "username",
+      render: (text) => ifFalsy(text, <USpan>-</USpan>),
     },
     {
       title: "手机号",
       dataIndex: "phone",
+      render: (text) => ifFalsy(text, <USpan>-</USpan>),
     },
     {
       title: "微信",
@@ -85,7 +91,9 @@ export default function UserManageView() {
       title: "注册时间",
       dataIndex: "register_at",
       render: (time) => (
-        <span>{time ? dayjs(time).format("YYYY-MM-DD HH:mm:ss") : "-"}</span>
+        <>
+          {time ? dayjs(time).format("YYYY-MM-DD HH:mm:ss") : <USpan>-</USpan>}
+        </>
       ),
     },
     {
