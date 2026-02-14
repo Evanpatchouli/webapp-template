@@ -31,7 +31,7 @@ export default function UserAvatar() {
   const { userInfo } = useLoginStore();
   const items = useItems({ emitter, userInfo });
   return (
-    <Dropdown menu={{ items }} placement="bottom" arrow>
+    <Dropdown menu={{ items }} placement="bottomRight" arrow>
       <Avatar style={styles.avatar}>{formatName(userInfo?.nickname)}</Avatar>
     </Dropdown>
   );
