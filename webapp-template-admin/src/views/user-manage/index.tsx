@@ -14,6 +14,8 @@ import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import {
   DeleteOutlined,
+  MailOutlined,
+  PhoneOutlined,
   RedoOutlined,
   WechatOutlined,
 } from "@ant-design/icons";
@@ -40,9 +42,19 @@ export default function UserManageView() {
 
   const items: MenuProps["items"] = [
     {
+      label: "绑定手机",
+      key: "bind_phone",
+      icon: <PhoneOutlined />,
+    },
+    {
       label: "绑定微信",
       key: "bind_wechat",
       icon: <WechatOutlined />,
+    },
+    {
+      label: "绑定邮箱",
+      key: "bind_email",
+      icon: <MailOutlined />,
     },
     {
       label: "重置密码",
