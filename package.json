@@ -1,0 +1,10 @@
+{
+  "name": "webapp-template",
+  "private": true,
+  "scripts": {
+    "dev:common": "pnpm run build:watch -w common",
+    "dev:admin": "pnpm run dev -w admin",
+    "dev:server": "pnpm run start:dev -w server",
+    "build": "pnpm run build -w common && npm run build -w admin && npm run build -w server"
+  }
+}
