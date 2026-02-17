@@ -1,10 +1,11 @@
-import { UserSchema } from '@/modules/user-module/user.schema';
+import { ADMIN_USER_ID } from '@/constants/admin';
+import { UserSchema } from '@/modules/user-module/user.schema'
 import mongoose from 'mongoose';
 
 export async function v2() {
   const UserModel = mongoose.model('User', UserSchema);
   const adminUser = await UserModel.findOne({
-    openid: 'ofSEA2KzGjX1IGcUFASZWgln9Lnw',
+    _id: ADMIN_USER_ID,
   });
   if (adminUser) {
     adminUser.email = 'evanpatchouli@foxmail.com';

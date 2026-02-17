@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import * as RoleAPI from "../../api/role.api";
+import * as RoleAPI from "@/api/role.api";
 
 export default function RoleView() {
   const [roles, setRoles] = useState<any[]>([]);

@@ -39,6 +39,9 @@ export const v2Boolean = ({ value }: { value: any }): boolean => {
   return toBoolean(value);
 };
 
+/**
+ * @param value 不少于24字符
+ */
 export const toObjectId = (value: any): Types.ObjectId => {
   if (['string', 'number'].includes(typeof value)) {
     return Types.ObjectId.createFromHexString(value.toString());

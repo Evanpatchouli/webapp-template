@@ -1,44 +1,14 @@
-import React, { useMemo } from "react";
-import { DashboardOutlined, UserOutlined } from "@ant-design/icons";
-import { Flex, Layout, Menu, theme, Typography, type MenuProps } from "antd";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import React from "react";
+import { Flex, Layout, theme, Typography } from "antd";
+import { Outlet } from "react-router";
 import { APP_NAME } from "@/constants";
-import { withoutTrailingSlash } from "ufo";
 import useLoginCheck from "@/hooks/useLoginCheck";
 import dayjs from "dayjs";
 import useLogout from "@/hooks/useLogout";
 import UserAvatar from "@/components/UserAvatar";
+import { AuthMenu } from "./components/auth-menu";
 
 const { Header, Content, Footer, Sider } = Layout;
-
-type OnItemClick = (key: string) => void;
-
-const createItems = (onItemClick: OnItemClick) =>
-  [
-    {
-      key: "/dashboard",
-      icon: React.createElement(DashboardOutlined),
-      label: "仪表盘",
-    },
-    {
-      key: "/role",
-      icon: React.createElement(UserOutlined),
-      label: "角色管理",
-    },
-    {
-      key: "/user-manage",
-      icon: React.createElement(UserOutlined),
-      label: "用户管理",
-    },
-    {
-      key: "/permission-demo",
-      icon: React.createElement(UserOutlined),
-      label: "权限示例",
-    },
-  ].map((item) => ({
-    ...item,
-    onClick: () => onItemClick(item.key),
-  })) as MenuProps["items"];
 
 export default function Home() {
   useLoginCheck();
@@ -48,28 +18,6 @@ export default function Home() {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const nav = useNavigate();
-
-  const [selected, setSelected] = React.useState<string>("");
-  const items = useMemo(
-    () =>
-      createItems((key) => {
-        setSelected(key);
-        nav(key);
-      }),
-    [nav, setSelected],
-  );
-
-  const location = useLocation();
-
-  React.useEffect(() => {
-    const path = location.pathname;
-    const targetSelected = withoutTrailingSlash(path);
-    if (selected !== targetSelected) {
-      setSelected(targetSelected);
-    }
-  }, [location.pathname, selected]);
-
   return (
     <Layout style={{ minHeight: "100vh", maxHeight: "100vh" }}>
       <Sider
@@ -77,7 +25,7 @@ export default function Home() {
         breakpoint="lg"
         collapsedWidth="0"
         onBreakpoint={(broken) => {
-          console.log(broken);
+          console.log("是否触发响应式布局的断点：", broken);
         }}
         onCollapse={(collapsed, type) => {
           console.log(collapsed, type);
@@ -93,13 +41,7 @@ export default function Home() {
             {APP_NAME}
           </Typography.Text>
         </Flex>
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={["4"]}
-          items={items}
-          selectedKeys={[selected]}
-        />
+        <AuthMenu />
       </Sider>
       <Layout style={{ display: "flex", flexDirection: "column" }}>
         <Header

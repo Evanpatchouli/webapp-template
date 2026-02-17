@@ -1,13 +1,14 @@
 import { createHashRouter, Navigate, RouterProvider } from "react-router";
 import Home from "@/views/home";
 import LoginView from "@/views/login";
-import RoleView from "@/views/role";
 import Forbidden from "@/views/forbidden";
-import PermissionDemo from "@/views/permission-demo";
-import AuthRoute from "@/components/AuthRoute";
-import { PERMISSIONS } from "@/constants/permissions";
-import { lazy } from "react";
-import UserManageView from "@/views/user-manage";
+import { Suspense } from "react";
+import { generateRoutes } from "./generator";
+import { routeConfigs } from "./config";
+import { Spin } from "antd";
+import NotFound from "@/views/notfound";
+
+const authorizedRoutes = generateRoutes(routeConfigs);
 
 const router = createHashRouter([
   {
@@ -19,6 +20,10 @@ const router = createHashRouter([
     Component: Forbidden,
   },
   {
+    path: "/404",
+    Component: NotFound,
+  },
+  {
     path: "/",
     element: <Home />,
     children: [
@@ -26,32 +31,32 @@ const router = createHashRouter([
         index: true, // 当访问父路由时
         element: <Navigate to="/dashboard" replace />,
       },
+      ...authorizedRoutes,
+      // 404 兜底
       {
-        path: "/dashboard",
-        Component: lazy(() => import("@/views/dashboard")),
-      },
-      {
-        path: "/role",
-        element: (
-          <AuthRoute permission={PERMISSIONS.SYSTEM_MANAGE}>
-            <RoleView />
-          </AuthRoute>
-        ),
-      },
-      {
-        path: "/user-manage",
-        element: (
-          <AuthRoute permission={PERMISSIONS.SYSTEM_MANAGE}>
-            <UserManageView />
-          </AuthRoute>
-        ),
-      },
-      {
-        path: "/permission-demo",
-        Component: PermissionDemo,
+        path: "*",
+        element: <Navigate to="/404" replace />,
       },
     ],
   },
 ]);
 
-export const RouterView = () => <RouterProvider router={router} />;
+// 带 Suspense 的路由提供者
+export const RouterView = () => (
+  <Suspense
+    fallback={
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Spin size="large" tip="页面加载中..." />
+      </div>
+    }
+  >
+    <RouterProvider router={router} />
+  </Suspense>
+);

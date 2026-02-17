@@ -23,3 +23,5 @@ export const OPTWay = {
 export const StoreNames = {
   LOGIN: "app-login-store",
 } as const;
+
+export const ADMIN_USER_ID = "000000000000000000000000";

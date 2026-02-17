@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import * as UserManageAPI from "../../api/user-manage.api";
+import * as UserManageAPI from "@/api/user-manage.api";
 import {
   Button,
   Dropdown,
@@ -7,7 +7,6 @@ import {
   message,
   Table,
   Tag,
-  Typography,
   type MenuProps,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
