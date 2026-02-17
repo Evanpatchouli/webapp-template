@@ -1,4 +1,4 @@
-import { ADMIN_USER_ID } from '@/constants/admin';
+import { ADMIN_USER_ID } from '@/constants/user';
 import { UserSchema } from '@/modules/user-module/user.schema'
 import mongoose from 'mongoose';
 

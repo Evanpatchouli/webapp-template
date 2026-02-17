@@ -2,3 +2,4 @@ node_modules
 
 # Claude 记忆系统（个人使用，不提交到仓库）
 .claude/
+.agent/

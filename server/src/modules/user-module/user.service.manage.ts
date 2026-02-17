@@ -6,6 +6,9 @@ import { UserModel } from './user.model';
 import { UserRoleService } from './user.service.role';
 import { QueryFilter } from 'mongoose';
 import { PaginatedResult } from '@/types/query';
+import CustomError from '@/exception/CustomError';
+import { RESET_PASSWORD } from '@/constants/user';
+import { vofy } from '@/utils/vofy';
 
 @Injectable()
 @Dependencies(getModelToken(User.name))
@@ -14,7 +17,7 @@ export class UserManageService {
     @Inject() private userModel: UserModel,
     @Inject() private emitter: EventEmitter2,
     @Inject() private userRoleService: UserRoleService,
-  ) {}
+  ) { }
 
   /**
    * 分页查询
@@ -26,5 +29,69 @@ export class UserManageService {
   ): Promise<PaginatedResult<User>> {
     const result = await this.userModel.findPage(page, pageSize);
     return result;
+  }
+
+  async getUserDetail(user_id: string): Promise<User> {
+    const user = await this.userModel.findById(user_id);
+    if (!user) {
+      throw new CustomError(`User(id: ${user_id}) not found`);
+    }
+    return user;
+  }
+
+  async toggleUserStatus(user_id: string): Promise<void> {
+    const user = await this.userModel.findById(user_id);
+    if (!user) {
+      throw new CustomError(`User(id: ${user_id}) not found`);
+    }
+    await this.userModel.updateById(user_id, { status: user.status === 1 ? 0 : 1 });
+  }
+
+  async updatePhone(user_id: string, phone: string): Promise<void> {
+    const user = await this.userModel.findById(user_id);
+    if (!user) {
+      throw new CustomError(`User(id: ${user_id}) not found`);
+    }
+    await this.userModel.updateById(user_id, { phone });
+  }
+
+  async updateWchat(user_id: string, openid: string): Promise<void> {
+    const user = await this.userModel.findById(user_id);
+    if (!user) {
+      throw new CustomError(`User(id: ${user_id}) not found`);
+    }
+    await this.userModel.updateById(user_id, { openid });
+  }
+
+  async updateEmail(user_id: string, email: string): Promise<void> {
+    const user = await this.userModel.findById(user_id);
+    if (!user) {
+      throw new CustomError(`User(id: ${user_id}) not found`);
+    }
+    await this.userModel.updateById(user_id, { email });
+  }
+
+  async resetPassword(user_id: string): Promise<void> {
+    const user = await this.userModel.findById(user_id);
+    if (!user) {
+      throw new CustomError(`User(id: ${user_id}) not found`);
+    }
+    await this.userModel.updateById(user_id, { password: RESET_PASSWORD });
+  }
+
+  async deleteUser(user_id: string): Promise<void> {
+    const user = await this.userModel.findById(user_id);
+    if (!user) {
+      throw new CustomError(`User(id: ${user_id}) not found`);
+    }
+    await this.userModel.updateById(user_id, { deleted_at: Date.now() });
+  }
+
+  async restoreUser(user_id: string): Promise<void> {
+    const user = await this.userModel.findById(user_id);
+    if (!user) {
+      throw new CustomError(`User(id: ${user_id}) not found`);
+    }
+    await this.userModel.updateById(user_id, { deleted_at: null as any });
   }
 }

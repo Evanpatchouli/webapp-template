@@ -5,6 +5,7 @@ import {
   Dropdown,
   Flex,
   message,
+  Modal,
   Table,
   Tag,
   type MenuProps,
@@ -22,7 +23,7 @@ import type { PaginatedResult } from "@/types/resp";
 import { ifFalsy } from "@/utils/value";
 import USpan from "@/components/unimportant/uspan";
 import UA from "@/components/unimportant/ua";
-import { ADMIN_USER_ID } from "@webapp-template/common"
+import { ADMIN_USER_ID, sleep } from "@webapp-template/common"
 
 export default function UserManageView() {
   const [userPage, setUserPage] = useState<
@@ -36,9 +37,37 @@ export default function UserManageView() {
   });
 
   const handleMenuClick: MenuProps["onClick"] = (info) => {
-    message.info("Click on menu item.");
-    console.log("click", info);
-  };
+    switch (info.key) {
+      case "bind_phone":
+        message.info("绑定手机功能尚未支持");
+        break;
+      case "bind_wechat":
+        message.info("绑定微信功能尚未支持");
+        break;
+      case "bind_email":
+        message.info("绑定邮箱功能尚未支持");
+        break;
+      case "reset_password":
+        message.info("重置密码功能尚未支持");
+        break;
+      case "delete":
+        Modal.confirm({
+          title: "确认删除",
+          content: "确认删除该用户吗？",
+          onOk: async () => {
+            message.loading({ content: "正在删除...", key: "delete" });
+            await sleep(1000);
+            message.info({ content: "删除功能尚未支持", key: "delete" });
+          },
+          okText: "确认",
+          onCancel: () => { },
+          cancelText: "取消",
+        })
+        break;
+      default:
+        break;
+    };
+  }
 
   const createItems = (record: Record<string, any>): MenuProps["items"] => {
     return [

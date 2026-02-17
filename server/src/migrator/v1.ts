@@ -9,7 +9,7 @@ import {
   ApiMethod,
   PermissionSchema,
 } from '../modules/permission-module/permission.schema';
-import { ADMIN_USER_ID } from '@/constants/admin';
+import { ADMIN_USER_ID } from '@/constants/user';
 
 // 数据库连接配置
 const MONGO_URI = process.env.MONGODB_URI || config.CONNECTION;

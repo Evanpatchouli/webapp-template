@@ -89,4 +89,8 @@ export class UserModel {
       totalPages: Math.ceil(total / size),
     };
   }
+
+  async updateById(id: string, data: Partial<User>) {
+    return this.model.findByIdAndUpdate(id, data).exec();
+  }
 }
