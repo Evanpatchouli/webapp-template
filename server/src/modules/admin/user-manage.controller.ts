@@ -60,7 +60,8 @@ export class UserManageController {
       params.size,
     );
     return Resp.success({
-      list: list.map((i) => vofy(i)),
+      // list: list.map((i) => vofy(i)),
+      list,
       ...result,
     });
   }
@@ -70,7 +71,7 @@ export class UserManageController {
   @Tag('获取用户详情')
   async getUserDetail(@Param('id') id: string): Promise<Resp<User>> {
     const user = await this.userManageService.getUserDetail(id);
-    return Resp.success(vofy(user));
+    return Resp.success(user);
   }
 
   @RoleIn('SUPER_ADMIN', 'DEV_ADMIN', 'OPS_ADMIN')

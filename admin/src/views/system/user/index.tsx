@@ -4,6 +4,8 @@ import {
   Button,
   Dropdown,
   Flex,
+  Form,
+  Input,
   message,
   Modal,
   Table,
@@ -23,7 +25,7 @@ import type { PaginatedResult } from "@/types/resp";
 import { ifFalsy } from "@/utils/value";
 import USpan from "@/components/unimportant/uspan";
 import UA from "@/components/unimportant/ua";
-import { ADMIN_USER_ID, sleep } from "@webapp-template/common"
+import { ADMIN_USER_ID } from "@webapp-template/common"
 
 export default function UserManageView() {
   const [userPage, setUserPage] = useState<
@@ -35,39 +37,57 @@ export default function UserManageView() {
     size: 10,
     totalPages: 1,
   });
+  const [phoneModal, setPhoneModal] = useState({ open: false, userId: "" });
+  const [emailModal, setEmailModal] = useState({ open: false, userId: "" });
+  const [phoneForm] = Form.useForm();
+  const [emailForm] = Form.useForm();
 
-  const handleMenuClick: MenuProps["onClick"] = (info) => {
+  const loadData = async () => {
+    const resp = await UserManageAPI.queryUserPage({ page: userPage.page, size: userPage.size });
+    setUserPage(resp.getData() || { list: [], total: 0, page: 1, size: 10, totalPages: 1 });
+  };
+
+  const handleMenuClick = (record: Record<string, any>): MenuProps["onClick"] => (info) => {
     switch (info.key) {
       case "bind_phone":
-        message.info("绑定手机功能尚未支持");
+        setPhoneModal({ open: true, userId: record.id });
+        phoneForm.setFieldsValue({ phone: record.phone || "" });
         break;
       case "bind_wechat":
         message.info("绑定微信功能尚未支持");
         break;
       case "bind_email":
-        message.info("绑定邮箱功能尚未支持");
+        setEmailModal({ open: true, userId: record.id });
+        emailForm.setFieldsValue({ email: record.email || "" });
         break;
       case "reset_password":
-        message.info("重置密码功能尚未支持");
+        Modal.confirm({
+          title: "确认重置密码",
+          content: "确认重置该用户的密码吗？",
+          onOk: async () => {
+            await UserManageAPI.resetPassword(record.id);
+            message.success("密码重置成功");
+            loadData();
+          },
+          okText: "确认",
+          cancelText: "取消",
+        });
         break;
       case "delete":
         Modal.confirm({
           title: "确认删除",
           content: "确认删除该用户吗？",
           onOk: async () => {
-            message.loading({ content: "正在删除...", key: "delete" });
-            await sleep(1000);
-            message.info({ content: "删除功能尚未支持", key: "delete" });
+            await UserManageAPI.deleteUser(record.id);
+            message.success("删除成功");
+            loadData();
           },
           okText: "确认",
-          onCancel: () => { },
           cancelText: "取消",
-        })
+        });
         break;
-      default:
-        break;
-    };
-  }
+    }
+  };
 
   const createItems = (record: Record<string, any>): MenuProps["items"] => {
     return [
@@ -145,12 +165,28 @@ export default function UserManageView() {
       render: (_, record) => {
         return (
           <Flex align="center" gap="small">
-            <Button>详情</Button>
-            <Button disabled={record.id === ADMIN_USER_ID}>禁用</Button>
+            <Button onClick={async () => {
+              const resp = await UserManageAPI.getUserDetail(record.id);
+              Modal.info({
+                title: "用户详情",
+                content: <pre>{JSON.stringify(resp.getData(), null, 2)}</pre>,
+                width: 600,
+              });
+            }}>详情</Button>
+            <Button
+              disabled={record.id === ADMIN_USER_ID}
+              onClick={async () => {
+                await UserManageAPI.toggleUserStatus(record.id);
+                message.success(record.status ? "已禁用" : "已启用");
+                loadData();
+              }}
+            >
+              {record.status ? "禁用" : "启用"}
+            </Button>
             <Dropdown.Button
               menu={{
                 items: createItems(record),
-                onClick: handleMenuClick,
+                onClick: handleMenuClick(record),
               }}
             >
               更多
@@ -185,6 +221,46 @@ export default function UserManageView() {
           current: userPage.page,
         }}
       />
+      <Modal
+        title="更新手机号"
+        open={phoneModal.open}
+        onCancel={() => setPhoneModal({ open: false, userId: "" })}
+        onOk={async () => {
+          const values = await phoneForm.validateFields();
+          await UserManageAPI.updatePhone(phoneModal.userId, values.phone);
+          message.success("手机号更新成功");
+          setPhoneModal({ open: false, userId: "" });
+          loadData();
+        }}
+        okText="确认"
+        cancelText="取消"
+      >
+        <Form form={phoneForm} layout="vertical">
+          <Form.Item name="phone" label="手机号" rules={[{ required: true, message: "请输入手机号" }]}>
+            <Input placeholder="请输入手机号" />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        title="更新邮箱"
+        open={emailModal.open}
+        onCancel={() => setEmailModal({ open: false, userId: "" })}
+        onOk={async () => {
+          const values = await emailForm.validateFields();
+          await UserManageAPI.updateEmail(emailModal.userId, values.email);
+          message.success("邮箱更新成功");
+          setEmailModal({ open: false, userId: "" });
+          loadData();
+        }}
+        okText="确认"
+        cancelText="取消"
+      >
+        <Form form={emailForm} layout="vertical">
+          <Form.Item name="email" label="邮箱" rules={[{ required: true, type: "email", message: "请输入有效的邮箱" }]}>
+            <Input placeholder="请输入邮箱" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }
