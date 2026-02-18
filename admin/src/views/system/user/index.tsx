@@ -254,7 +254,7 @@ export default function UserManageView() {
         },
       );
     });
-    RoleAPI.queryAllRoles({ withPermissions: false }).then((resp) => {
+    RoleAPI.queryAllRoles({ withPermission: false }).then((resp) => {
       setRoles(resp.getData() || []);
     });
   }, []);

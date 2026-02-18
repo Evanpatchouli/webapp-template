@@ -1,3 +1,4 @@
+export type NonNull<T> = T extends null ? never : T;
 export type Nullable<T> = T | null;
 export type Maybe<T> = T | null | undefined;
 export type NullableArray<T> = T[] | null;
@@ -58,6 +59,7 @@ export interface ModuleClass<T = any> {
     $inject?: string[];
 }
 export type ModuleRecord = Record<string, ModuleClass>;
+export type AsyncReturnType<T extends (...args: any[]) => Promise<any>> = ReturnType<T> extends Promise<infer U> ? U : ReturnType<T>;
 type Unit = 'Years' | 'Year' | 'Yrs' | 'Yr' | 'Y' | 'Weeks' | 'Week' | 'W' | 'Days' | 'Day' | 'D' | 'Hours' | 'Hour' | 'Hrs' | 'Hr' | 'H' | 'Minutes' | 'Minute' | 'Mins' | 'Min' | 'M' | 'Seconds' | 'Second' | 'Secs' | 'Sec' | 's' | 'Milliseconds' | 'Millisecond' | 'Msecs' | 'Msec' | 'Ms';
 export type TimeUnitAnyCase = Unit | Uppercase<Unit> | Lowercase<Unit>;
 export type TimeUnitString = `${number}` | `${number}${TimeUnitAnyCase}` | `${number} ${TimeUnitAnyCase}`;

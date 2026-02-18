@@ -1,3 +1,4 @@
+import { type BaseQueryPageParams, type PaginatedResult } from '@webapp-template/common';
 import type Resp from "@/models/Resp";
 import { createAppRequest } from "./request";
 
@@ -8,17 +9,19 @@ interface Role {
   role_name: string;
   role_code: string;
   description: string;
-  perrmissions: Permission[];
+  permissions: Permission[];
 }
 
 interface Permission {
   id: number;
-  permission_name: string;
-  permission_code: string;
+  perm_name: string;
+  perm_code: string;
   description: string;
 }
 
 export const queryAllRoles = (params: {
-  withPermissions?: boolean;
+  withPermission?: boolean;
   simplify?: boolean;
-}): Promise<Resp<Array<Role>>> => appRequest.get("/", { params });
+}): Promise<Resp<Array<Role>>> => appRequest.get("/all", { params });
+
+export const queryRolePage = (params: BaseQueryPageParams): Promise<Resp<PaginatedResult<Role>>> => appRequest.get("/", { params });

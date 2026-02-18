@@ -1,22 +1,24 @@
 import { Auth, Public, RoleIn, Roles } from '@decorators/auth.decorator';
 import { Controller, Get, Inject, Query, Req } from '@nestjs/common';
-import Resp from '../../common/models/Resp';
+import Resp from '@/common/models/Resp';
 import type { Request } from 'express';
 import { UserService } from '../user-module/user.service';
-import { RoleDocument } from '../role-module/role.schema';
+import { Role, RoleDocument } from '../role-module/role.schema';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { RoleService } from '../role-module/role.service';
 import {
   buildPermissionTree,
   PermissionDocument,
 } from '../permission-module/permission.schema';
-import { ToBoolean } from '../../decorators/transform.decorator';
-import { Tag } from '../../decorators/tag.decorator';
-import { Todo } from '../../decorators/todo.decorator';
+import { ToBoolean, ToNumber } from '@/decorators/transform.decorator';
+import { Tag } from '@/decorators/tag.decorator';
+import { Todo } from '@/decorators/todo.decorator';
+import { PaginatedResult } from '@/types/query';
+import { Deprecated } from '@/decorators/deprecated.decorator';
 
 class QueryUserRoleParams {
   @IsNotEmpty()
-  openid: string;
+  id: string;
 
   @IsOptional()
   @ToBoolean()
@@ -36,6 +38,15 @@ class QueryAllRolesParams {
   simplify?: boolean; // 是否简化返回结果
 }
 
+class QueryRolePageParams {
+  @IsNotEmpty()
+  @ToNumber()
+  page: number;
+  @IsNotEmpty()
+  @ToNumber()
+  size: number;
+}
+
 @Auth()
 @Tag('角色管理')
 @Controller('admin/role')
@@ -48,7 +59,7 @@ export class RoleController {
   ) { }
 
   @Public()
-  @Get()
+  @Get("/all")
   @Tag('查询所有角色')
   async queryAll(
     @Query() params: QueryAllRolesParams,
@@ -60,17 +71,30 @@ export class RoleController {
     return Resp.success(result.map(simplifyRole));
   }
 
-  @Public()
+
+  @RoleIn('SUPER_ADMIN', 'DEV_ADMIN', 'OPS_ADMIN')
+  @Get('/')
+  async queryRolePage(
+    @Query() params: QueryRolePageParams,
+  ): Promise<Resp<PaginatedResult<SimplifiedRole>>> {
+    const { list, ...result } = await this.roleService.findPage(params.page, params.size);
+    return Resp.success({
+      list: list.map(simplifyRole),
+      ...result,
+    });
+  }
+
+  @Deprecated('应当放到 user 模块')
   @Tag('查询用户角色')
   @Get('/queryUserRole')
   async queryUserRole(
     @Query() params: QueryUserRoleParams,
     @Req() req: Request,
   ): Promise<Resp<{ roles: RoleDocument[]; permission_tree?: any[] }>> {
-    const { openid, withPermission, withPermissionTree } = params;
+    const { id: user_id, withPermission, withPermissionTree } = params;
 
     const result: RoleDocument[] | string = await this.userService.getRoles(
-      openid,
+      user_id,
       { withPermission },
     );
     if (typeof result === 'string') {
@@ -88,18 +112,22 @@ export class RoleController {
   }
 }
 
+type SimplifiedRole = Pick<Role, 'id' | 'role_code' | 'role_name' | 'description'> & {
+  permissions: Pick<PermissionDocument, 'id' | 'perm_code' | 'perm_name' | 'description'>[]
+};
+
 function simplifyRole(
   role: RoleDocument & { permissions: PermissionDocument[] },
-) {
+): SimplifiedRole {
   return {
-    id: role._id,
+    id: role.id,
     role_code: role.role_code,
     role_name: role.role_name,
     description: role.description,
     permissions: role.permissions.map((permission) => ({
-      id: permission._id,
-      permission_code: permission.perm_code,
-      permission_name: permission.perm_name,
+      id: permission.id,
+      perm_code: permission.perm_code,
+      perm_name: permission.perm_name,
       description: permission.description,
     })),
   };

@@ -1,3 +1,4 @@
+export type NonNull<T> = T extends null ? never : T;
 export type Nullable<T> = T | null;
 export type Maybe<T> = T | null | undefined;
 
@@ -107,11 +108,13 @@ export type ProviderRecord = Record<string, ProviderClass>;
 
 // 动态模块注册
 export interface ModuleClass<T = any> {
-  new (...args: any[]): T;
+  new(...args: any[]): T;
   $inject?: string[];
 }
 
 export type ModuleRecord = Record<string, ModuleClass>;
+
+export type AsyncReturnType<T extends (...args: any[]) => Promise<any>> = ReturnType<T> extends Promise<infer U> ? U : ReturnType<T>;
 
 type Unit =
   | 'Years'

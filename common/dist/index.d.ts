@@ -1,3 +1,4 @@
+type NonNull<T> = T extends null ? never : T;
 type Nullable<T> = T | null;
 type Maybe<T> = T | null | undefined;
 type NullableArray<T> = T[] | null;
@@ -58,10 +59,23 @@ interface ModuleClass<T = any> {
     $inject?: string[];
 }
 type ModuleRecord = Record<string, ModuleClass>;
+type AsyncReturnType<T extends (...args: any[]) => Promise<any>> = ReturnType<T> extends Promise<infer U> ? U : ReturnType<T>;
 type Unit = 'Years' | 'Year' | 'Yrs' | 'Yr' | 'Y' | 'Weeks' | 'Week' | 'W' | 'Days' | 'Day' | 'D' | 'Hours' | 'Hour' | 'Hrs' | 'Hr' | 'H' | 'Minutes' | 'Minute' | 'Mins' | 'Min' | 'M' | 'Seconds' | 'Second' | 'Secs' | 'Sec' | 's' | 'Milliseconds' | 'Millisecond' | 'Msecs' | 'Msec' | 'Ms';
 type TimeUnitAnyCase = Unit | Uppercase<Unit> | Lowercase<Unit>;
 type TimeUnitString = `${number}` | `${number}${TimeUnitAnyCase}` | `${number} ${TimeUnitAnyCase}`;
 type TimeUnit = number | TimeUnitString;
+
+interface BaseQueryPageParams {
+    page: number;
+    size: number;
+}
+interface PaginatedResult<T> {
+    list: T[];
+    total: number;
+    page: number;
+    size: number;
+    totalPages: number;
+}
 
 declare const ADMIN_USER_ID = "000000000000000000000000";
 
@@ -130,4 +144,4 @@ declare const ROLE_METADATA: {
 declare const sleep: (ms: number) => Promise<unknown>;
 
 export { ADMIN_USER_ID, ROLES, ROLE_METADATA, sleep };
-export type { AbstractClass, AnyClass, BooleanRecord, Class, ClassConfigRecord, ClassRecord, ClassWithConfig, FunctionRecord, Hintable, HintableArray, HintableObject, InstanceRecord, KeysOf, Maybe, MaybeArray, MaybeBoolean, MaybeFunction, MaybeNumber, MaybeObject, MaybeString, ModuleClass, ModuleRecord, Nullable, NullableArray, NullableBoolean, NullableFunction, NullableNumber, NullableObject, NullableString, NumberRecord, ObjectRecord, ProviderClass, ProviderRecord, RecordOf, RoleCode, StringRecord, TimeUnit, TimeUnitAnyCase, TimeUnitString, ValuesOf, ValuesOfClass, ValuesOfFunction, ValuesOfIntersection, ValuesOfMap, ValuesOfObject, ValuesOfPromise, ValuesOfRecord, ValuesOfSet, ValuesOfTuple, ValuesOfUnion };
+export type { AbstractClass, AnyClass, AsyncReturnType, BaseQueryPageParams, BooleanRecord, Class, ClassConfigRecord, ClassRecord, ClassWithConfig, FunctionRecord, Hintable, HintableArray, HintableObject, InstanceRecord, KeysOf, Maybe, MaybeArray, MaybeBoolean, MaybeFunction, MaybeNumber, MaybeObject, MaybeString, ModuleClass, ModuleRecord, NonNull, Nullable, NullableArray, NullableBoolean, NullableFunction, NullableNumber, NullableObject, NullableString, NumberRecord, ObjectRecord, PaginatedResult, ProviderClass, ProviderRecord, RecordOf, RoleCode, StringRecord, TimeUnit, TimeUnitAnyCase, TimeUnitString, ValuesOf, ValuesOfClass, ValuesOfFunction, ValuesOfIntersection, ValuesOfMap, ValuesOfObject, ValuesOfPromise, ValuesOfRecord, ValuesOfSet, ValuesOfTuple, ValuesOfUnion };

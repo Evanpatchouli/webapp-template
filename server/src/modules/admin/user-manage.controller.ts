@@ -58,7 +58,7 @@ export class UserManageController {
   @RoleIn('SUPER_ADMIN', 'DEV_ADMIN', 'OPS_ADMIN')
   @Get()
   @Tag('分页查询用户')
-  async queryAll(
+  async queryUserPage(
     @Query() params: QueryUserPageParams,
   ): Promise<Resp<PaginatedResult<User>>> {
     const { list, ...result } = await this.userManageService.findPage(

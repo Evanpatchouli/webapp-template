@@ -1,8 +1,9 @@
 import { Maybe } from '../../types/index';
-import { DeleteResult, Model, Types } from 'mongoose';
+import { DeleteResult, Model, QueryFilter, Types } from 'mongoose';
 import { Injectable, Dependencies, Inject } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Role } from './role.schema';
+import { PaginatedResult } from '@/types/query';
 
 @Injectable()
 @Dependencies(getModelToken(Role.name))
@@ -29,6 +30,30 @@ export class RoleService {
 
   async findAll() {
     return this.model.find().exec();
+  }
+
+  async findPage(
+    page: number,
+    size: number,
+    filter?: QueryFilter<Role>,
+  ): Promise<PaginatedResult<Role>> {
+    const [list, total] = await Promise.all([
+      this.model
+        .find(filter)
+        .skip((page - 1) * size)
+        .limit(size)
+        .populate('permissions')
+        .exec(),
+      this.model.countDocuments(filter).exec(),
+    ]);
+
+    return {
+      list,
+      total,
+      page,
+      size,
+      totalPages: Math.ceil(total / size),
+    };
   }
 
   async findById(id: string, options?: { withPermission?: boolean }) {
