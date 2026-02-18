@@ -77,6 +77,7 @@ export class UserModel {
         .find(filter)
         .skip((page - 1) * size)
         .limit(size)
+        .populate('roles')
         .exec(),
       this.model.countDocuments(filter).exec(),
     ]);

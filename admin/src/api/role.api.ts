@@ -19,5 +19,6 @@ interface Permission {
 }
 
 export const queryAllRoles = (params: {
+  withPermissions?: boolean;
   simplify?: boolean;
 }): Promise<Resp<Array<Role>>> => appRequest.get("/", { params });

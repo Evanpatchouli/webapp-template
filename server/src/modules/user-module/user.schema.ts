@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Transform } from 'class-transformer';
+import { Role } from '../role-module/role.schema';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -111,6 +112,8 @@ export class User {
   // 自动映射的字段
   id: string;
 
+  roles?: Role[];
+
   // 转换为 Date 对象的方法
 
   getRegisterAtDate(): Date | null {
@@ -139,6 +142,14 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+// 虚拟字段：关联的权限列表
+UserSchema.virtual('roles', {
+  ref: 'Role',
+  localField: 'role_ids',
+  foreignField: '_id',
+  justOne: false,
+});
 
 // 在转换为JSON时，将 _id 转换为 id
 UserSchema.set('toJSON', {

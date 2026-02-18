@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import * as UserManageAPI from "@/api/user-manage.api";
+import * as RoleAPI from "@/api/role.api";
 import {
   Button,
   Dropdown,
@@ -8,6 +9,8 @@ import {
   Input,
   message,
   Modal,
+  Select,
+  Space,
   Table,
   Tag,
   type MenuProps,
@@ -20,6 +23,8 @@ import {
   PhoneOutlined,
   RedoOutlined,
   WechatOutlined,
+  UserOutlined,
+  MoreOutlined
 } from "@ant-design/icons";
 import type { PaginatedResult } from "@/types/resp";
 import { ifFalsy } from "@/utils/value";
@@ -39,8 +44,12 @@ export default function UserManageView() {
   });
   const [phoneModal, setPhoneModal] = useState({ open: false, userId: "" });
   const [emailModal, setEmailModal] = useState({ open: false, userId: "" });
+  const [roleModal, setRoleModal] = useState({ open: false, userId: "" });
   const [phoneForm] = Form.useForm();
   const [emailForm] = Form.useForm();
+  const [roleForm] = Form.useForm();
+
+  const [roles, setRoles] = useState<Array<Record<string, any>>>([]);
 
   const loadData = async () => {
     const resp = await UserManageAPI.queryUserPage({ page: userPage.page, size: userPage.size });
@@ -59,6 +68,10 @@ export default function UserManageView() {
       case "bind_email":
         setEmailModal({ open: true, userId: record.id });
         emailForm.setFieldsValue({ email: record.email || "" });
+        break;
+      case "update_roles":
+        setRoleModal({ open: true, userId: record.id });
+        roleForm.setFieldsValue({ roles: record.roles ? record.roles.map((role: Record<string, any>) => role.id) : [] });
         break;
       case "reset_password":
         Modal.confirm({
@@ -107,15 +120,22 @@ export default function UserManageView() {
         icon: <MailOutlined />,
       },
       {
+        label: "变更角色",
+        key: "update_roles",
+        icon: <UserOutlined />,
+        disabled: record.id === ADMIN_USER_ID, // 管理员账号不允许变更角色
+      },
+      {
         label: "重置密码",
         key: "reset_password",
         icon: <RedoOutlined />,
-        disabled: record.id === ADMIN_USER_ID,
+        disabled: record.id === ADMIN_USER_ID, // 管理员账号不允许重置密码
       },
       {
         label: "删除",
         key: "delete",
         icon: <DeleteOutlined />,
+        disabled: record.id === ADMIN_USER_ID, // 管理员账号不允许删除
         danger: true,
       },
     ]
@@ -152,6 +172,24 @@ export default function UserManageView() {
         status ? <Tag color="green">已激活</Tag> : <Tag>未激活</Tag>,
     },
     {
+      title: "角色",
+      dataIndex: "roles",
+      render: (roles) =>
+        roles && roles.length > 0 ? (
+          <Flex wrap="wrap" gap="small">
+            {
+              roles.map((role: Record<string, any>) => (
+                <Tag key={role.id} color="blue">
+                  {role.role_name}
+                </Tag>
+              ))
+            }
+          </Flex>
+        ) : (
+          <USpan>-</USpan>
+        )
+    },
+    {
       title: "注册时间",
       dataIndex: "register_at",
       render: (time) => (
@@ -183,14 +221,21 @@ export default function UserManageView() {
             >
               {record.status ? "禁用" : "启用"}
             </Button>
-            <Dropdown.Button
-              menu={{
-                items: createItems(record),
-                onClick: handleMenuClick(record),
-              }}
-            >
-              更多
-            </Dropdown.Button>
+            <Space.Compact>
+              <Button>
+                更多
+              </Button>
+              <Dropdown
+                menu={{
+                  items: createItems(record),
+                  onClick: handleMenuClick(record),
+                }}
+                placement="bottomRight"
+                arrow
+              >
+                <Button icon={<MoreOutlined />} />
+              </Dropdown>
+            </Space.Compact>
           </Flex>
         );
       },
@@ -209,11 +254,15 @@ export default function UserManageView() {
         },
       );
     });
+    RoleAPI.queryAllRoles({ withPermissions: false }).then((resp) => {
+      setRoles(resp.getData() || []);
+    });
   }, []);
   return (
     <div>
       <Table
         dataSource={userPage.list}
+        rowKey={"id"}
         columns={columns}
         pagination={{
           pageSize: userPage.size,
@@ -258,6 +307,26 @@ export default function UserManageView() {
         <Form form={emailForm} layout="vertical">
           <Form.Item name="email" label="邮箱" rules={[{ required: true, type: "email", message: "请输入有效的邮箱" }]}>
             <Input placeholder="请输入邮箱" />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        title="更新角色"
+        open={roleModal.open}
+        onCancel={() => setRoleModal({ open: false, userId: "" })}
+        onOk={async () => {
+          const values = await roleForm.validateFields();
+          await UserManageAPI.updateRoles(roleModal.userId, values.roles);
+          message.success("角色更新成功");
+          setRoleModal({ open: false, userId: "" });
+          loadData();
+        }}
+        okText="确认"
+        cancelText="取消"
+      >
+        <Form form={roleForm} layout="vertical">
+          <Form.Item name="roles" label="角色" rules={[{ required: true, message: "请选择角色" }]}>
+            <Select mode="multiple" placeholder="请选择角色" options={roles.map(role => ({ label: role.role_name, value: role.id }))} />
           </Form.Item>
         </Form>
       </Modal>

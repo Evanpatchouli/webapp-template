@@ -30,6 +30,9 @@ class QueryUserRoleParams {
 class QueryAllRolesParams {
   @IsOptional()
   @ToBoolean()
+  withPermission?: boolean; // 是否联查权限
+  @IsOptional()
+  @ToBoolean()
   simplify?: boolean; // 是否简化返回结果
 }
 
@@ -42,17 +45,16 @@ export class RoleController {
     private userService: UserService,
     @Inject()
     private roleService: RoleService,
-  ) {}
+  ) { }
 
-  @RoleIn('SUPER_ADMIN', 'DEV_ADMIN', 'OPS_ADMIN')
+  @Public()
   @Get()
-  @Todo('FEAT', 'ignore')
   @Tag('查询所有角色')
   async queryAll(
     @Query() params: QueryAllRolesParams,
   ): Promise<Resp<Record<string, any>[]>> {
-    const result = await this.roleService.findAllWithPermissionCodes();
-    if (!params.simplify) {
+    const result = await (params.withPermission ? this.roleService.findAllWithPermissionCodes() : this.roleService.findAll());
+    if (!params.simplify || !params.withPermission) {
       return Resp.success(result);
     }
     return Resp.success(result.map(simplifyRole));

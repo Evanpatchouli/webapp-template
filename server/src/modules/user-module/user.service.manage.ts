@@ -9,6 +9,7 @@ import { PaginatedResult } from '@/types/query';
 import CustomError from '@/exception/CustomError';
 import { RESET_PASSWORD } from '@/constants/user';
 import { vofy } from '@/utils/vofy';
+import { toObjectId } from '@/utils/mapper';
 
 @Injectable()
 @Dependencies(getModelToken(User.name))
@@ -69,6 +70,14 @@ export class UserManageService {
       throw new CustomError(`User(id: ${user_id}) not found`);
     }
     await this.userModel.updateById(user_id, { email });
+  }
+
+  async updateRoles(user_id: string, role_ids: string[]): Promise<void> {
+    const user = await this.userModel.findById(user_id);
+    if (!user) {
+      throw new CustomError(`User(id: ${user_id}) not found`);
+    }
+    await this.userModel.updateById(user_id, { role_ids: role_ids.map(toObjectId) });
   }
 
   async resetPassword(user_id: string): Promise<void> {

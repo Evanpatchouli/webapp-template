@@ -1,7 +1,7 @@
 import { Auth, Public, RoleIn, Roles } from '@decorators/auth.decorator';
 import { Controller, Get, Inject, Query, Req, Param, Put, Delete, Body } from '@nestjs/common';
 import Resp from '../../common/models/Resp';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { RoleService } from '../role-module/role.service';
 import { ToBoolean, ToNumber } from '../../decorators/transform.decorator';
 import { Tag } from '../../decorators/tag.decorator';
@@ -36,6 +36,12 @@ class UpdateEmailDto {
   @IsNotEmpty()
   @IsString()
   email: string;
+}
+
+class UpdateRolesDto {
+  @IsNotEmpty({ each: true })
+  @IsArray()
+  roleIds: string[];
 }
 
 @Auth()
@@ -103,6 +109,14 @@ export class UserManageController {
   @Tag('更新用户邮箱')
   async updateEmail(@Param('id') id: string, @Body() dto: UpdateEmailDto): Promise<Resp<void>> {
     await this.userManageService.updateEmail(id, dto.email);
+    return Resp.success();
+  }
+
+  @RoleIn('SUPER_ADMIN', 'DEV_ADMIN', 'OPS_ADMIN')
+  @Put(':id/roles')
+  @Tag('更新用户角色')
+  async updateRoles(@Param('id') id: string, @Body() dto: UpdateRolesDto): Promise<Resp<void>> {
+    await this.userManageService.updateRoles(id, dto.roleIds);
     return Resp.success();
   }
 
