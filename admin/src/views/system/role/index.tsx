@@ -5,8 +5,8 @@ import { Pagination, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import USpan from "@/components/unimportant/uspan";
 import { ifFalsy } from "@/utils/value";
-import useAvailableHeight from "@/hooks/useAvailableHeight";
 import Flex from "@/components/Flex";
+import { BaseTableView } from "@/components/layouts/BaseTableView";
 
 type Role = NonNull<AsyncReturnType<typeof RoleAPI.queryRolePage>['data']>['list'][number]
 
@@ -69,11 +69,9 @@ export default function RoleView() {
     });
   }, []);
 
-  const tableY = useAvailableHeight((h) => {
-    return h - 156;
-  }); // 设置表格高度
+  const tableY = BaseTableView.useTableHeight(); // 设置表格高度
   return (
-    <Flex flex={1} direction="column" justify="space-between">
+    <BaseTableView>
       <Table
         dataSource={rolePage.list}
         rowKey={"id"}
@@ -81,21 +79,19 @@ export default function RoleView() {
         pagination={false}
         scroll={{ y: tableY }}
       />
-      <Flex justify="right" style={{ marginTop: 20 }}>
-        <Pagination
-          pageSize={rolePage.size}
-          total={rolePage.total}
-          current={rolePage.page}
-          onChange={(page) => {
-            RoleAPI.queryRolePage({
-              page,
-              size: rolePage.size,
-            }).then((resp) => {
-              setRolePage(resp.getData() || rolePage);
-            });
-          }}
-        />
-      </Flex>
-    </Flex>
+      <Pagination
+        pageSize={rolePage.size}
+        total={rolePage.total}
+        current={rolePage.page}
+        onChange={(page) => {
+          RoleAPI.queryRolePage({
+            page,
+            size: rolePage.size,
+          }).then((resp) => {
+            setRolePage(resp.getData() || rolePage);
+          });
+        }}
+      />
+    </BaseTableView>
   );
 }
