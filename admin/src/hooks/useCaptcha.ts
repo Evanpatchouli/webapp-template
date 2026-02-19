@@ -1,7 +1,7 @@
 import { message } from "antd";
 import { useState, useEffect, useCallback } from "react";
 import * as API from "@/api/captcha.api";
-import type { NullableString, ValuesOf } from "@/types";
+import type { NullableString, ValuesOf } from "@webapp-template/common";
 import type { CaptchaWay } from "@/constants";
 
 export interface UseCaptchaOptions {

@@ -1,5 +1,5 @@
-import type { ValuesOf } from "@/types";
-import { CaptchaWay } from '../../constants/index';
+import type { ValuesOf } from "@webapp-template/common";
+import { CaptchaWay } from '@/constants/index';
 import useCaptcha, { type UseCaptchaOptions } from "@/hooks/useCaptcha";
 
 export type CaptchaProps = {

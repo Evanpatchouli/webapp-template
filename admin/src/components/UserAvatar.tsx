@@ -1,6 +1,6 @@
 import { useLoginStore } from "@/auth/store";
 import { useEmit } from "@/hooks/useEmitter";
-import type { Nullable } from "@/types";
+import type { Nullable } from "@webapp-template/common";
 import type UserInfo from "@/types/userinfo";
 import { createStyles } from "@/utils/style.util";
 import { Dropdown, Avatar, type MenuProps } from "antd";

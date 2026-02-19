@@ -1,5 +1,5 @@
 import { SUCCESS_CODE } from "@/constants";
-import type { Nullable } from "@/types";
+import type { Nullable } from "@webapp-template/common";
 
 export default class Resp<T = unknown> {
   private code: number | string;

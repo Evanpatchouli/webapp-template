@@ -1,5 +1,5 @@
 import { StoreNames } from "@/constants";
-import type { Nullable } from "@/types";
+import type { Nullable } from "@webapp-template/common";
 import type { LoginStore } from "@/types/store";
 import type UserInfo from "@/types/userinfo";
 import { create } from "zustand";

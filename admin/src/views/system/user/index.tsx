@@ -26,7 +26,7 @@ import {
   UserOutlined,
   MoreOutlined
 } from "@ant-design/icons";
-import type { PaginatedResult } from "@/types/resp";
+import type { PaginatedResult } from "@webapp-template/common";
 import { ifFalsy } from "@/utils/value";
 import USpan from "@/components/unimportant/uspan";
 import UA from "@/components/unimportant/ua";

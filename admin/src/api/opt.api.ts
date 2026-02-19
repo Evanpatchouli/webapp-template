@@ -1,7 +1,7 @@
 import type Resp from "@/models/Resp";
 import { createAppRequest } from "./request";
 import { OPTWay } from "../constants/index";
-import type { ValuesOf } from "@/types";
+import type { ValuesOf } from "@webapp-template/common";
 
 const appRequest = createAppRequest("/opt");
 

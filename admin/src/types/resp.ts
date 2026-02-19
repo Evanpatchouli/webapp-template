@@ -1,4 +1,4 @@
-import type { Nullable } from "./utils";
+import type { Nullable } from "@webapp-template/common";
 
 export interface IResp<T = unknown> {
   code: number | string;
