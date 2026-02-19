@@ -14,7 +14,7 @@ import {
   ROLES_KEY,
 } from './auth.constants';
 import { RoleCodes } from '@/constants/role.constant';
-import { Hintable, HintableArray } from '@/types';
+import { Hintable, HintableArray } from '@webapp-template/common';
 
 /**
  * Controller 或 Method 级别：开启认证

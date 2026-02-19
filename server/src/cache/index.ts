@@ -1,5 +1,4 @@
-import { Nullable } from '../types';
-import { TimeUnitString } from '../types';
+import { Nullable, TimeUnitString } from '@webapp-template/common';
 import TimeUnitUtil from '../utils/time.unit.util';
 import { createLogger } from '@/common/logger';
 import path from 'path';

@@ -1,7 +1,7 @@
 import cache from '@/cache';
 import { OPTWay } from '@/constants/opt.constant';
 import { IllegalArgument } from '@/exception/CustomError';
-import { TimeUnitString, ValuesOf } from '@/types';
+import { TimeUnitString, ValuesOf } from '@webapp-template/common';
 import { Injectable, Session } from '@nestjs/common';
 import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';

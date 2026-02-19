@@ -1,6 +1,7 @@
 import { logger } from '@/common/logger';
 import { CaptchaWay } from '@/constants/captcha.constant';
-import { SessionState, ValuesOf } from '@/types';
+import { SessionState } from '@/types';
+import { ValuesOf } from '@webapp-template/common';
 import { isBlank } from '@/utils/string.utl';
 import { orBlank } from '@/utils/value';
 import { Injectable, Session } from '@nestjs/common';

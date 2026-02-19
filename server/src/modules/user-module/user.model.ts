@@ -4,7 +4,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import { UserIdentity } from '@/types/user';
 import { orNull } from '@/utils/value';
-import { PaginatedResult } from '@/types/query';
+import { PaginatedResult } from '@webapp-template/common';
 
 @Injectable()
 @Dependencies(getModelToken(User.name))

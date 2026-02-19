@@ -5,7 +5,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserModel } from './user.model';
 import { UserRoleService } from './user.service.role';
 import { QueryFilter } from 'mongoose';
-import { PaginatedResult } from '@/types/query';
+import { PaginatedResult } from '@webapp-template/common';
 import CustomError from '@/exception/CustomError';
 import { RESET_PASSWORD } from '@/constants/user';
 import { vofy } from '@/utils/vofy';

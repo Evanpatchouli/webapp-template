@@ -1,6 +1,6 @@
 import cache from '@/cache';
 import { OPTWay } from '@/constants/opt.constant';
-import { TimeUnitString, ValuesOf } from '@/types';
+import { TimeUnitString, ValuesOf } from '@webapp-template/common';
 import { Inject, Injectable, Session } from '@nestjs/common';
 import { createOPT } from './opt.util';
 import EmailService from '../email-module/email.service';

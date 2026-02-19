@@ -1,4 +1,4 @@
-import { TimeUnit } from '@/types';
+import { TimeUnit } from '@webapp-template/common';
 import TimeUnitUtil from '@/utils/time.unit.util';
 
 export type OPT = {

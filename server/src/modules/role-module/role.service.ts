@@ -1,9 +1,9 @@
-import { Maybe } from '../../types/index';
+import { Maybe } from '@webapp-template/common';
 import { DeleteResult, Model, QueryFilter, Types } from 'mongoose';
 import { Injectable, Dependencies, Inject } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Role } from './role.schema';
-import { PaginatedResult } from '@/types/query';
+import { PaginatedResult } from '@webapp-template/common';
 
 @Injectable()
 @Dependencies(getModelToken(Role.name))

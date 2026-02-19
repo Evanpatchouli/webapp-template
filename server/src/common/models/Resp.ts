@@ -1,4 +1,4 @@
-import { Maybe } from '@/types';
+import { Maybe } from '@webapp-template/common';
 import RS from '@/constants/resp.constant';
 
 export default class Resp<T = unknown> {

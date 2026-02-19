@@ -1,9 +1,9 @@
-import { Maybe } from '@/types';
+import { Maybe } from '@webapp-template/common';
 import {
   signJWTToken,
   signLoginToken,
   AuthTokenPayload,
-} from '../../../auth/jwt';
+} from '@/auth/jwt';
 
 export const generateToken = (
   id: string,

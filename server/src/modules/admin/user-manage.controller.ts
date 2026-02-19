@@ -7,7 +7,7 @@ import { ToBoolean, ToNumber } from '../../decorators/transform.decorator';
 import { Tag } from '../../decorators/tag.decorator';
 import { Todo } from '../../decorators/todo.decorator';
 import { UserManageService } from '../user-module/user.service.manage';
-import { PaginatedResult } from '@/types/query';
+import { PaginatedResult } from '@webapp-template/common';
 import { User } from '../user-module/user.schema';
 import { vofy } from '@/utils/vofy';
 

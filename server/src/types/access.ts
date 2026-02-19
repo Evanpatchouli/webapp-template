@@ -1,4 +1,4 @@
-import { Maybe } from './utils';
+import { Maybe } from '@webapp-template/common';
 import type { AuthTokenPayload } from '../auth/jwt';
 
 export interface AccessInfo {

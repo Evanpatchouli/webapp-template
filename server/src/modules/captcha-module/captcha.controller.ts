@@ -1,6 +1,6 @@
 import { Controller, Get, Inject, Session } from '@nestjs/common';
-import Resp from '../../common/models/Resp';
-import { Tag } from '../../decorators/tag.decorator';
+import Resp from '@/common/models/Resp';
+import { Tag } from '@/decorators/tag.decorator';
 import type { SessionState } from '@/types';
 import CaptchaService from './captcha.service';
 import { CaptchaWay } from '@/constants/captcha.constant';

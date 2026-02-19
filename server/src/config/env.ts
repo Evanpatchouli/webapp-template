@@ -2,7 +2,7 @@
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as fs from 'fs';
-import { Maybe } from '@/types';
+import { Maybe } from '@webapp-template/common';
 
 // 根据环境加载不同的 .env 文件
 const envFile =

@@ -1,4 +1,4 @@
-import { Maybe, Nullable, NullableObject } from '../types';
+import { Maybe, Nullable, NullableObject } from '@webapp-template/common';
 import jwt from 'jsonwebtoken';
 import AppConfig from '../app.config';
 import RS from '../constants/resp.constant';

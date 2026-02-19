@@ -1,4 +1,4 @@
-import { ValuesOf } from '@/types';
+import { ValuesOf } from '@webapp-template/common';
 
 export const LoginTypes = {
   OPENID: 'openid',

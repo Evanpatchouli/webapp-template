@@ -1,4 +1,4 @@
-import { TimeUnit, TimeUnitString } from '../types/utils';
+import { TimeUnit, TimeUnitString } from '@webapp-template/common';
 export default class TimeUnitUtil {
   private static readonly UNIT_MAP: Record<string, number> = {
     // 年 (365天)

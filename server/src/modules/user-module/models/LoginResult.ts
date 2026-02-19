@@ -1,4 +1,4 @@
-import { Maybe } from '../../../types';
+import { Maybe } from '@webapp-template/common';
 
 export interface ILoginResult {
   id: string;

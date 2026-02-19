@@ -1,4 +1,4 @@
-export function Data<T extends { new (...args: any[]): {} }>(constructor: T) {
+export function Data<T extends { new (...args: any[]): object }>(constructor: T) {
   return class extends constructor {
     constructor(...args: any[]) {
       super(...args);
@@ -24,7 +24,7 @@ export function Data<T extends { new (...args: any[]): {} }>(constructor: T) {
         if (!(this as any)[getterName]) {
           Object.defineProperty(this, getterName, {
             value: function () {
-              return (this as any)[property];
+              return (this)[property];
             },
             writable: false,
             enumerable: false,
@@ -36,7 +36,7 @@ export function Data<T extends { new (...args: any[]): {} }>(constructor: T) {
         if (!(this as any)[setterName]) {
           Object.defineProperty(this, setterName, {
             value: function (value: any) {
-              (this as any)[property] = value;
+              (this)[property] = value;
               return this;
             },
             writable: false,
