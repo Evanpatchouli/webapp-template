@@ -58,25 +58,19 @@ export default function Home() {
           <UserAvatar />
         </Header>
         <Content
+          id="view-container"
           style={{
             margin: "24px 16px 0",
+            padding: 24,
             flex: 1,
             display: "flex",
             flexDirection: "column",
-            overflow: "hidden",
+            background: colorBgContainer,
+            borderRadius: borderRadiusLG,
+            overflow: "auto",
           }}
         >
-          <div
-            style={{
-              padding: 24,
-              flex: 1,
-              overflow: "auto",
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            <Outlet />
-          </div>
+          <Outlet />
         </Content>
         <Footer style={{ textAlign: "center", flexShrink: 0 }}>
           WebApp Admin Template ©{dayjs().year()} Powered by Evanpatchouli

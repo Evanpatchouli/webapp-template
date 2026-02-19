@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import * as RoleAPI from "@/api/role.api";
 import type { AsyncReturnType, NonNull, PaginatedResult } from "@webapp-template/common";
-import { Flex, Table, Tag } from "antd";
+import { Pagination, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import USpan from "@/components/unimportant/uspan";
 import { ifFalsy } from "@/utils/value";
+import useAvailableHeight from "@/hooks/useAvailableHeight";
+import Flex from "@/components/Flex";
 
 type Role = NonNull<AsyncReturnType<typeof RoleAPI.queryRolePage>['data']>['list'][number]
 
@@ -28,6 +30,7 @@ export default function RoleView() {
     {
       title: "角色编码",
       dataIndex: "role_code",
+      width: 180,
       render: (text) => text ? <Tag color="blue">{text}</Tag> : <USpan>-</USpan>,
     },
     {
@@ -65,18 +68,34 @@ export default function RoleView() {
       setRolePage(resp.getData() || rolePage);
     });
   }, []);
+
+  const tableY = useAvailableHeight((h) => {
+    return h - 156;
+  }); // 设置表格高度
   return (
-    <div>
+    <Flex flex={1} direction="column" justify="space-between">
       <Table
         dataSource={rolePage.list}
         rowKey={"id"}
         columns={columns}
-        pagination={{
-          pageSize: rolePage.size,
-          total: rolePage.total,
-          current: rolePage.page,
-        }}
+        pagination={false}
+        scroll={{ y: tableY }}
       />
-    </div>
+      <Flex justify="right" style={{ marginTop: 20 }}>
+        <Pagination
+          pageSize={rolePage.size}
+          total={rolePage.total}
+          current={rolePage.page}
+          onChange={(page) => {
+            RoleAPI.queryRolePage({
+              page,
+              size: rolePage.size,
+            }).then((resp) => {
+              setRolePage(resp.getData() || rolePage);
+            });
+          }}
+        />
+      </Flex>
+    </Flex>
   );
 }
