@@ -52,4 +52,40 @@ export class LoginLogService {
       .limit(size)
       .exec();
   }
+
+  async countDailyLoginLog() {
+    return this.model.countDocuments({
+      login_at: {
+        $gte: new Date().setHours(0, 0, 0, 0),
+        $lt: new Date().setHours(23, 59, 59, 999),
+      },
+    });
+  }
+
+  async countWeeklyLoginLog() {
+    return this.model.countDocuments({
+      login_at: {
+        $gte: new Date().setDate(new Date().getDate() - 7),
+        $lt: new Date().setDate(new Date().getDate()),
+      },
+    });
+  }
+
+  async countMonthlyLoginLog() {
+    return this.model.countDocuments({
+      login_at: {
+        $gte: new Date().setMonth(new Date().getMonth() - 1),
+        $lt: new Date().setMonth(new Date().getMonth()),
+      },
+    });
+  }
+
+  async countYearlyLoginLog() {
+    return this.model.countDocuments({
+      login_at: {
+        $gte: new Date().setFullYear(new Date().getFullYear() - 1),
+        $lt: new Date().setFullYear(new Date().getFullYear()),
+      },
+    });
+  }
 }

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
+    "@evanpatchouli/react-hooks-kit": "^1.3.0",
     "@webapp-template/common": "workspace:*",
     "antd": "^6.2.2",
     "axios": "^1.13.4",

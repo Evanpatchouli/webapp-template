@@ -13,6 +13,9 @@ importers:
       '@ant-design/icons':
         specifier: ^6.1.0
         version: 6.1.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@evanpatchouli/react-hooks-kit':
+        specifier: ^1.3.0
+        version: 1.3.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@webapp-template/common':
         specifier: workspace:*
         version: link:../common
@@ -617,6 +620,12 @@ packages:
   '@eslint/plugin-kit@0.4.1':
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@evanpatchouli/react-hooks-kit@1.3.0':
+    resolution: {integrity: sha512-DNSUPWHIuVjsxfSwsgdKHwQQz1HJvKwg05FLTl73Hca1dHTx24cXG25svS/2sj7e+XHsIGDNoPrW4gVWW4Fxeg==}
+    peerDependencies:
+      react: ^18.2.0
+      react-dom: ^18.2.0
 
   '@evanpatchouli/scheduler@1.1.3':
     resolution: {integrity: sha512-5xujfml0W3pDWdnydiAJtlkeCHNEGPJBNezeGp6tMZhW5G9tpsYZvKuFHIb6oN/dagcrtSuohc8s0kHkOnzKCg==}
@@ -5242,6 +5251,11 @@ snapshots:
     dependencies:
       '@eslint/core': 0.17.0
       levn: 0.4.1
+
+  '@evanpatchouli/react-hooks-kit@1.3.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    dependencies:
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
 
   '@evanpatchouli/scheduler@1.1.3':
     dependencies:

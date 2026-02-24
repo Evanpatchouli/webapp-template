@@ -14,6 +14,7 @@ import { AuthProvider } from './auth/auth.provider';
 import { CaptchaModule } from './modules/captcha-module';
 import { OPTModule } from './modules/opt-module';
 import { EmailModule } from './modules/email-module';
+import { LoginLogModule } from './modules/login-log-module';
 
 @Module({
   imports: [
@@ -27,13 +28,13 @@ import { EmailModule } from './modules/email-module';
     AdminModule,
     CaptchaModule,
     OPTModule,
-    EmailModule
+    EmailModule,
+    LoginLogModule,
   ],
   controllers: [AppController],
   providers: [AuthProvider, AppService, GlobalExcenptionCatchProvider],
   exports: [],
 })
-
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
