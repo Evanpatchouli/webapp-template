@@ -5,6 +5,7 @@ import { Inject, Injectable, Session } from '@nestjs/common';
 import { createOPT } from './opt.util';
 import EmailService from '../email-module/email.service';
 import { MessageService } from '../message-module/message.service';
+import { logger } from '@/common/logger';
 
 @Injectable()
 export default class OPTService {
@@ -26,8 +27,26 @@ export default class OPTService {
     return opt;
   }
 
-  verify(key: string, code: string, way: ValuesOf<typeof OPTWay>) {
-    return code === cache.get(`${way}::${key}`);
+  verify(
+    key: string,
+    code: string,
+    way: ValuesOf<typeof OPTWay>,
+    autoDisable = true,
+  ) {
+    const cacheKey = `${way}::${key}`;
+    logger.info(
+      `verify OPT: code(${code}) <=> cache[${cacheKey}](${cache.get(cacheKey)})`,
+    );
+    const isValid = code === cache.get(cacheKey);
+    if (isValid && autoDisable) {
+      this.disable(way, key);
+    }
+    return isValid;
+  }
+
+  disable(way: ValuesOf<typeof OPTWay>, key: string) {
+    const cacheKey = `${way}::${key}`;
+    cache.delete(cacheKey);
   }
 
   async generatePhoneLoginOPT(phone: string) {
