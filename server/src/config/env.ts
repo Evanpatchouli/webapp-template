@@ -26,7 +26,6 @@ export interface EnvConfig {
   DB_MONGO_USERNAME: Maybe<string>;
   DB_MONGO_PASSWORD: Maybe<string>;
 
-
   JWT_SECRET: string;
 
   // 应用配置
@@ -39,6 +38,11 @@ export interface EnvConfig {
   // 可选配置
   LOG_LEVEL?: string;
   DEBUG?: boolean;
+  SMTP_HOST?: string;
+  SMTP_SECURE?: boolean;
+  SMTP_PORT?: number;
+  SMTP_USER?: string;
+  SMTP_PASS?: string;
 }
 
 // 环境变量验证器
@@ -57,7 +61,7 @@ class EnvValidator {
     if (missingVars.length > 0) {
       throw new Error(
         `❌ 缺少必要的环境变量: ${missingVars.join(', ')}\n` +
-        `请检查 ${envFile} 文件或系统环境变量`,
+          `请检查 ${envFile} 文件或系统环境变量`,
       );
     }
   }

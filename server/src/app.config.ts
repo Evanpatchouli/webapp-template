@@ -38,4 +38,12 @@ export default class AppConfig {
     resave: false,
     saveUninitialized: false,
   };
+
+  public static readonly SMTP = {
+    host: env.SMTP_HOST,
+    port: env.SMTP_PORT,
+    secure: env.SMTP_SECURE,
+    user: env.SMTP_USER,
+    pass: env.SMTP_PASS,
+  };
 }
