@@ -28,6 +28,8 @@ import type { SessionState } from '@/types';
 import { OPTWay } from '@/constants/opt.constant';
 import { Tag } from '../../decorators/tag.decorator';
 import { Ip } from '@/decorators/ip.decorator';
+import { HeaderAuthorization } from '@/decorators/header.decorator';
+import { Todo } from '@/decorators/todo.decorator';
 
 class LoginQuery {
   @IsNotEmpty()
@@ -51,10 +53,12 @@ export class UserController {
   ): Promise<Resp<ILoginResult>> {
     const { type } = query;
     const loginHandlers = {
-      [LoginTypes.OPENID]: () => this.loginByOpenid(form as OpenidLoginForm, ip),
-      [LoginTypes.ACCOUNT]: () => this.loginByAccount(form as AccountLoginForm, session, ip),
+      [LoginTypes.OPENID]: () =>
+        this.loginByOpenid(form as OpenidLoginForm, ip),
+      [LoginTypes.ACCOUNT]: () =>
+        this.loginByAccount(form as AccountLoginForm, session, ip),
       [LoginTypes.PHONE]: () => this.loginByPhone(form as PhoneLoginForm, ip),
-      [LoginTypes.EMAIL]: () => this.loginByEmail(form as EmailLoginForm, ip)
+      [LoginTypes.EMAIL]: () => this.loginByEmail(form as EmailLoginForm, ip),
     };
 
     const handler = loginHandlers[type];
@@ -165,8 +169,13 @@ export class UserController {
     return Resp.success(result);
   }
 
+  @Todo('FIX')
   @Post('/logout')
-  logout(@CurrentUser() user: AuthTokenPayload) {
-    return Resp.success(null);
+  async logout(
+    @CurrentUser() user: AuthTokenPayload,
+    @HeaderAuthorization() token: string,
+  ) {
+    await this.userService.logout(user, token);
+    return Resp.success();
   }
 }

@@ -23,3 +23,5 @@ export const emailLogin = (data: EmailLoginForm): Promise<Resp<ILoginResult>> =>
 
 export const phoneLogin = (data: PhoneLoginForm): Promise<Resp<ILoginResult>> =>
   appRequest.post("/login/phone", data);
+
+export const logout = (): Promise<Resp<{}>> => appRequest.post("/logout");

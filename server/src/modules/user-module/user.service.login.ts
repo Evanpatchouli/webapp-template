@@ -3,14 +3,18 @@ import { getModelToken } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { generateToken } from './utils';
-import UserLoginEvent from '../../events/user.login.event';
-import UserCreatedEvent from '../../events/user.created.event';
+import UserLoginEvent from '@/events/user.login.event';
+import UserCreatedEvent from '@/events/user.created.event';
 import { ILoginResult, LoginResult } from './models/LoginResult';
 import { UserModel } from './user.model';
 import { UserRoleService } from './user.service.role';
 import CustomError from '@/exception/CustomError';
 import RS from '@/constants/resp.constant';
 import { LoginTypes } from '@/constants/login.constant';
+import { AuthTokenPayload, formatTokenKey } from '@/auth/jwt';
+import UserLogoutEvent from '@/events/user.logout.event';
+import { EVENTS } from '@/constants/events';
+import cache from '@/cache';
 
 @Injectable()
 @Dependencies(getModelToken(User.name))
@@ -51,7 +55,7 @@ export class UserLoginService {
       const email = user.email;
 
       this.emitter.emit(
-        'user.login',
+        EVENTS.USER_LOGIN,
         new UserLoginEvent(user.id, ip, last_login_at, LoginTypes.OPENID),
       );
 
@@ -92,9 +96,9 @@ export class UserLoginService {
     const username = user.username;
     const email = user.email;
 
-    this.emitter.emit('user.created', new UserCreatedEvent(user.id));
+    this.emitter.emit(EVENTS.USER_CREATED, new UserCreatedEvent(user.id));
     this.emitter.emit(
-      'user.login',
+      EVENTS.USER_LOGIN,
       new UserLoginEvent(user.id, ip, last_login_at, LoginTypes.OPENID),
     );
 
@@ -145,7 +149,7 @@ export class UserLoginService {
       );
 
       this.emitter.emit(
-        'user.login',
+        EVENTS.USER_LOGIN,
         new UserLoginEvent(user_id, ip, last_login_at, LoginTypes.ACCOUNT),
       );
 
@@ -200,7 +204,7 @@ export class UserLoginService {
       );
 
       this.emitter.emit(
-        'user.login',
+        EVENTS.USER_LOGIN,
         new UserLoginEvent(user_id, ip, last_login_at, LoginTypes.PHONE),
       );
 
@@ -247,9 +251,9 @@ export class UserLoginService {
       permissions,
     );
 
-    this.emitter.emit('user.created', new UserCreatedEvent(user.id));
+    this.emitter.emit(EVENTS.USER_CREATED, new UserCreatedEvent(user.id));
     this.emitter.emit(
-      'user.login',
+      EVENTS.USER_LOGIN,
       new UserLoginEvent(user_id, ip, last_login_at, LoginTypes.PHONE),
     );
 
@@ -296,7 +300,7 @@ export class UserLoginService {
       );
 
       this.emitter.emit(
-        'user.login',
+        EVENTS.USER_LOGIN,
         new UserLoginEvent(user_id, ip, last_login_at, LoginTypes.PHONE),
       );
 
@@ -343,9 +347,9 @@ export class UserLoginService {
       permissions,
     );
 
-    this.emitter.emit('user.created', new UserCreatedEvent(user.id));
+    this.emitter.emit(EVENTS.USER_CREATED, new UserCreatedEvent(user.id));
     this.emitter.emit(
-      'user.login',
+      EVENTS.USER_LOGIN,
       new UserLoginEvent(user_id, ip, last_login_at, LoginTypes.PHONE),
     );
 
@@ -359,5 +363,11 @@ export class UserLoginService {
       .Token(token)
       .Roles(roles)
       .Permissions(permissions);
+  }
+
+  async logout(user: AuthTokenPayload, token: string): Promise<void> {
+    cache.delete(formatTokenKey(token));
+    this.emitter.emit(EVENTS.USER_LOGOUT, new UserLogoutEvent(user.id));
+    return Promise.resolve();
   }
 }

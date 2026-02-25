@@ -33,10 +33,9 @@ export class UserEventsListener {
     );
   }
 
-  @OnEvent('user.deleted')
-  handleUserDeletedEvent(event: any) {
-    console.log('用户删除事件:', event);
-    // 清理相关数据
-    // 发送通知
+  @OnEvent('user.logout')
+  handleUserDeletedEvent(event: UserLoginEvent) {
+    logger.info(`用户登出（id: ${event.id}）`);
+    logger.debug('用户登出事件:', event);
   }
 }

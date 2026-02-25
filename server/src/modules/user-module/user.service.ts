@@ -6,6 +6,7 @@ import { UserRoleService } from './user.service.role';
 import { RoleDocument } from '../role-module/role.schema';
 import { AccountLoginForm } from './models/LoginForm';
 import { UserRegisterService } from './user.service.register';
+import { AuthTokenPayload } from '@/auth/jwt';
 
 @Injectable()
 @Dependencies(getModelToken(User.name))
@@ -64,5 +65,9 @@ export class UserService {
 
   async assignNormalUserRole(user_id: string) {
     return await this.userRoleService.assignNormalUserRole(user_id);
+  }
+
+  async logout(user: AuthTokenPayload, token: string) {
+    return await this.loginService.logout(user, token);
   }
 }
