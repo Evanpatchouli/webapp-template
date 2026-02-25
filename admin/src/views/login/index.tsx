@@ -5,6 +5,7 @@ import LoginForm from "./LoginForm";
 import QRCodeLogin from "./QRCodeLogin";
 import { APP_NAME, SYSTEM_NAME } from "@/constants";
 import { createStyles } from "@/utils/style.util";
+import { useTitle } from "@evanpatchouli/react-hooks-kit";
 
 const { Title, Text } = Typography;
 
@@ -14,6 +15,7 @@ enum LoginMode {
 }
 
 export default function LoginView() {
+  useTitle("登录 - WebApp");
   const [mode, setMode] = useState<LoginMode>(LoginMode.FORM);
 
   return (
@@ -85,8 +87,8 @@ const styles = createStyles({
       // "linear-gradient(180deg, #4096ff 0%, #0958d9 100%)", // 从下到上渐变
       // "linear-gradient(180deg, #0958d9 0%, #4096ff 100%)", // 从上到下渐变
       "linear-gradient(90deg, #0958d9 0%, #4096ff 100%)", // 从左到右渐变
-      // "linear-gradient(-90deg, #0958d9 0%, #4096ff 100%)", // 从右到左渐变
-      // "linear-gradient(-45deg, #0958d9 0%, #4096ff 75%, #69b1ff 100%)", // 从右下到左上渐变
+    // "linear-gradient(-90deg, #0958d9 0%, #4096ff 100%)", // 从右到左渐变
+    // "linear-gradient(-45deg, #0958d9 0%, #4096ff 75%, #69b1ff 100%)", // 从右下到左上渐变
     // "linear-gradient(135deg, #0958d9 0%, #4096ff 75%, #69b1ff 100%)", // 从左上到右下渐变
     display: "flex",
     flexDirection: "column",

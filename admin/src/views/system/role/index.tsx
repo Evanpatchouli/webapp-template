@@ -1,16 +1,24 @@
 import { useEffect, useState } from "react";
 import * as RoleAPI from "@/api/role.api";
-import type { AsyncReturnType, NonNull, PaginatedResult } from "@webapp-template/common";
+import type {
+  AsyncReturnType,
+  NonNull,
+  PaginatedResult,
+} from "@webapp-template/common";
 import { Pagination, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import USpan from "@/components/unimportant/uspan";
 import { ifFalsy } from "@/utils/value";
 import Flex from "@/components/Flex";
 import { BaseTableView } from "@/components/layouts/BaseTableView";
+import { useTitle } from "@evanpatchouli/react-hooks-kit";
 
-type Role = NonNull<AsyncReturnType<typeof RoleAPI.queryRolePage>['data']>['list'][number]
+type Role = NonNull<
+  AsyncReturnType<typeof RoleAPI.queryRolePage>["data"]
+>["list"][number];
 
 export default function RoleView() {
+  useTitle("角色管理 - WebApp");
   const [rolePage, setRolePage] = useState<PaginatedResult<Role>>({
     list: [] as any,
     page: 1,
@@ -31,7 +39,8 @@ export default function RoleView() {
       title: "角色编码",
       dataIndex: "role_code",
       width: 180,
-      render: (text) => text ? <Tag color="blue">{text}</Tag> : <USpan>-</USpan>,
+      render: (text) =>
+        text ? <Tag color="blue">{text}</Tag> : <USpan>-</USpan>,
     },
     {
       title: "角色描述",
@@ -42,23 +51,18 @@ export default function RoleView() {
     {
       title: "所有权限",
       dataIndex: "permissions",
-      render: (permissions: Role['permissions'], record: Role) => (
+      render: (permissions: Role["permissions"], record: Role) =>
         permissions && permissions.length > 0 ? (
           <Flex wrap="wrap" gap="small">
-            {
-              permissions.map((perm) => (
-                <Tag key={record.id + perm.id}>
-                  {perm.perm_name}
-                </Tag>
-              ))
-            }
+            {permissions.map((perm) => (
+              <Tag key={record.id + perm.id}>{perm.perm_name}</Tag>
+            ))}
           </Flex>
         ) : (
           <USpan>-</USpan>
-        )
-      )
-    }
-  ]
+        ),
+    },
+  ];
 
   useEffect(() => {
     RoleAPI.queryRolePage({

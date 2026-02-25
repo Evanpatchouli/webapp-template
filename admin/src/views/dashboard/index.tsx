@@ -1,4 +1,4 @@
-import { useAsyncEffect } from "@evanpatchouli/react-hooks-kit";
+import { useAsyncEffect, useTitle } from "@evanpatchouli/react-hooks-kit";
 import * as LoginLogAPI from "@/api/login-log.api";
 import { useState } from "react";
 import { Row, Col, Statistic, Card, Table, Tag } from "antd";
@@ -28,6 +28,8 @@ export default function DashboardView() {
   const [yearlyCount, setYearlyCount] = useState<number>(0);
   const [trendData, setTrendData] = useState<DailyLoginData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  useTitle("仪表盘 - WebApp");
 
   useAsyncEffect(async () => {
     setLoading(true);

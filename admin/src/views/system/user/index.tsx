@@ -24,15 +24,17 @@ import {
   RedoOutlined,
   WechatOutlined,
   UserOutlined,
-  MoreOutlined
+  MoreOutlined,
 } from "@ant-design/icons";
 import type { PaginatedResult } from "@webapp-template/common";
 import { ifFalsy } from "@/utils/value";
 import USpan from "@/components/unimportant/uspan";
 import UA from "@/components/unimportant/ua";
-import { ADMIN_USER_ID } from "@webapp-template/common"
+import { ADMIN_USER_ID } from "@webapp-template/common";
+import { useTitle } from "@evanpatchouli/react-hooks-kit";
 
 export default function UserManageView() {
+  useTitle("用户管理 - WebApp");
   const [userPage, setUserPage] = useState<
     PaginatedResult<Record<string, any>>
   >({
@@ -52,55 +54,72 @@ export default function UserManageView() {
   const [roles, setRoles] = useState<Array<Record<string, any>>>([]);
 
   const loadData = async () => {
-    const resp = await UserManageAPI.queryUserPage({ page: userPage.page, size: userPage.size });
-    setUserPage(resp.getData() || { list: [], total: 0, page: 1, size: 10, totalPages: 1 });
+    const resp = await UserManageAPI.queryUserPage({
+      page: userPage.page,
+      size: userPage.size,
+    });
+    setUserPage(
+      resp.getData() || {
+        list: [],
+        total: 0,
+        page: 1,
+        size: 10,
+        totalPages: 1,
+      },
+    );
   };
 
-  const handleMenuClick = (record: Record<string, any>): MenuProps["onClick"] => (info) => {
-    switch (info.key) {
-      case "bind_phone":
-        setPhoneModal({ open: true, userId: record.id });
-        phoneForm.setFieldsValue({ phone: record.phone || "" });
-        break;
-      case "bind_wechat":
-        message.info("绑定微信功能尚未支持");
-        break;
-      case "bind_email":
-        setEmailModal({ open: true, userId: record.id });
-        emailForm.setFieldsValue({ email: record.email || "" });
-        break;
-      case "update_roles":
-        setRoleModal({ open: true, userId: record.id });
-        roleForm.setFieldsValue({ roles: record.roles ? record.roles.map((role: Record<string, any>) => role.id) : [] });
-        break;
-      case "reset_password":
-        Modal.confirm({
-          title: "确认重置密码",
-          content: "确认重置该用户的密码吗？",
-          onOk: async () => {
-            await UserManageAPI.resetPassword(record.id);
-            message.success("密码重置成功");
-            loadData();
-          },
-          okText: "确认",
-          cancelText: "取消",
-        });
-        break;
-      case "delete":
-        Modal.confirm({
-          title: "确认删除",
-          content: "确认删除该用户吗？",
-          onOk: async () => {
-            await UserManageAPI.deleteUser(record.id);
-            message.success("删除成功");
-            loadData();
-          },
-          okText: "确认",
-          cancelText: "取消",
-        });
-        break;
-    }
-  };
+  const handleMenuClick =
+    (record: Record<string, any>): MenuProps["onClick"] =>
+    (info) => {
+      switch (info.key) {
+        case "bind_phone":
+          setPhoneModal({ open: true, userId: record.id });
+          phoneForm.setFieldsValue({ phone: record.phone || "" });
+          break;
+        case "bind_wechat":
+          message.info("绑定微信功能尚未支持");
+          break;
+        case "bind_email":
+          setEmailModal({ open: true, userId: record.id });
+          emailForm.setFieldsValue({ email: record.email || "" });
+          break;
+        case "update_roles":
+          setRoleModal({ open: true, userId: record.id });
+          roleForm.setFieldsValue({
+            roles: record.roles
+              ? record.roles.map((role: Record<string, any>) => role.id)
+              : [],
+          });
+          break;
+        case "reset_password":
+          Modal.confirm({
+            title: "确认重置密码",
+            content: "确认重置该用户的密码吗？",
+            onOk: async () => {
+              await UserManageAPI.resetPassword(record.id);
+              message.success("密码重置成功");
+              loadData();
+            },
+            okText: "确认",
+            cancelText: "取消",
+          });
+          break;
+        case "delete":
+          Modal.confirm({
+            title: "确认删除",
+            content: "确认删除该用户吗？",
+            onOk: async () => {
+              await UserManageAPI.deleteUser(record.id);
+              message.success("删除成功");
+              loadData();
+            },
+            okText: "确认",
+            cancelText: "取消",
+          });
+          break;
+      }
+    };
 
   const createItems = (record: Record<string, any>): MenuProps["items"] => {
     return [
@@ -138,7 +157,7 @@ export default function UserManageView() {
         disabled: record.id === ADMIN_USER_ID, // 管理员账号不允许删除
         danger: true,
       },
-    ]
+    ];
   };
 
   const columns: ColumnsType<Record<string, any>> = [
@@ -177,17 +196,15 @@ export default function UserManageView() {
       render: (roles) =>
         roles && roles.length > 0 ? (
           <Flex wrap="wrap" gap="small">
-            {
-              roles.map((role: Record<string, any>) => (
-                <Tag key={role.id} color="blue">
-                  {role.role_name}
-                </Tag>
-              ))
-            }
+            {roles.map((role: Record<string, any>) => (
+              <Tag key={role.id} color="blue">
+                {role.role_name}
+              </Tag>
+            ))}
           </Flex>
         ) : (
           <USpan>-</USpan>
-        )
+        ),
     },
     {
       title: "注册时间",
@@ -203,14 +220,18 @@ export default function UserManageView() {
       render: (_, record) => {
         return (
           <Flex align="center" gap="small">
-            <Button onClick={async () => {
-              const resp = await UserManageAPI.getUserDetail(record.id);
-              Modal.info({
-                title: "用户详情",
-                content: <pre>{JSON.stringify(resp.getData(), null, 2)}</pre>,
-                width: 600,
-              });
-            }}>详情</Button>
+            <Button
+              onClick={async () => {
+                const resp = await UserManageAPI.getUserDetail(record.id);
+                Modal.info({
+                  title: "用户详情",
+                  content: <pre>{JSON.stringify(resp.getData(), null, 2)}</pre>,
+                  width: 600,
+                });
+              }}
+            >
+              详情
+            </Button>
             <Button
               disabled={record.id === ADMIN_USER_ID}
               onClick={async () => {
@@ -222,9 +243,7 @@ export default function UserManageView() {
               {record.status ? "禁用" : "启用"}
             </Button>
             <Space.Compact>
-              <Button>
-                更多
-              </Button>
+              <Button>更多</Button>
               <Dropdown
                 menu={{
                   items: createItems(record),
@@ -285,7 +304,11 @@ export default function UserManageView() {
         cancelText="取消"
       >
         <Form form={phoneForm} layout="vertical">
-          <Form.Item name="phone" label="手机号" rules={[{ required: true, message: "请输入手机号" }]}>
+          <Form.Item
+            name="phone"
+            label="手机号"
+            rules={[{ required: true, message: "请输入手机号" }]}
+          >
             <Input placeholder="请输入手机号" />
           </Form.Item>
         </Form>
@@ -305,7 +328,13 @@ export default function UserManageView() {
         cancelText="取消"
       >
         <Form form={emailForm} layout="vertical">
-          <Form.Item name="email" label="邮箱" rules={[{ required: true, type: "email", message: "请输入有效的邮箱" }]}>
+          <Form.Item
+            name="email"
+            label="邮箱"
+            rules={[
+              { required: true, type: "email", message: "请输入有效的邮箱" },
+            ]}
+          >
             <Input placeholder="请输入邮箱" />
           </Form.Item>
         </Form>
@@ -325,8 +354,19 @@ export default function UserManageView() {
         cancelText="取消"
       >
         <Form form={roleForm} layout="vertical">
-          <Form.Item name="roles" label="角色" rules={[{ required: true, message: "请选择角色" }]}>
-            <Select mode="multiple" placeholder="请选择角色" options={roles.map(role => ({ label: role.role_name, value: role.id }))} />
+          <Form.Item
+            name="roles"
+            label="角色"
+            rules={[{ required: true, message: "请选择角色" }]}
+          >
+            <Select
+              mode="multiple"
+              placeholder="请选择角色"
+              options={roles.map((role) => ({
+                label: role.role_name,
+                value: role.id,
+              }))}
+            />
           </Form.Item>
         </Form>
       </Modal>
