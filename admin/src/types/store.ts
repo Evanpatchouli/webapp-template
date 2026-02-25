@@ -1,4 +1,4 @@
-import type { Nullable } from ".";
+import type { Nullable } from "@webapp-template/common";
 import type UserInfo from "./userinfo";
 
 export interface LoginStore {

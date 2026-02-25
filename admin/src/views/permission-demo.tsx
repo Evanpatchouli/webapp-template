@@ -17,7 +17,7 @@ export default function PermissionDemo() {
   useTitle("权限示例 - WebApp");
   const { userInfo } = useLoginStore();
   const checker = usePermissionChecker();
-  const canManageData = useHasPermission(PERMISSIONS.DATA_MANAGE);
+  const canManageData = useHasPermission(PERMISSIONS.DATA);
   const isSuperAdmin = useIsSuperAdmin();
 
   return (
@@ -91,7 +91,7 @@ export default function PermissionDemo() {
         <Space direction="vertical" style={{ width: "100%" }}>
           <div>
             <strong>有权限时显示:</strong>
-            <AuthWrapper permission={PERMISSIONS.USER_LIST}>
+            <AuthWrapper permission={PERMISSIONS.SYSTEM_USER_VIEW}>
               <Tag color="success">您有 USER_LIST 权限，可以看到这段内容</Tag>
             </AuthWrapper>
           </div>
@@ -99,10 +99,10 @@ export default function PermissionDemo() {
           <div>
             <strong>无权限时显示 fallback:</strong>
             <AuthWrapper
-              permission={PERMISSIONS.BACKUP_DELETE}
-              fallback={<Tag color="warning">您没有 BACKUP_DELETE 权限</Tag>}
+              permission={PERMISSIONS.DATA_BACKUP}
+              fallback={<Tag color="warning">您没有 DATA_BACKUP 权限</Tag>}
             >
-              <Tag color="success">您有 BACKUP_DELETE 权限</Tag>
+              <Tag color="success">您有 DATA_BACKUP 权限</Tag>
             </AuthWrapper>
           </div>
         </Space>
@@ -118,7 +118,7 @@ export default function PermissionDemo() {
         <Space>
           <AuthButton
             type="primary"
-            permission={PERMISSIONS.BACKUP_EXECUTE}
+            permission={PERMISSIONS.DATA_BACKUP_EXECUTE}
             onClick={() => alert("执行备份")}
           >
             执行备份
@@ -126,7 +126,7 @@ export default function PermissionDemo() {
 
           <AuthButton
             danger
-            permission={PERMISSIONS.CLEAN_EXECUTE}
+            permission={PERMISSIONS.DATA_CLEAN_EXECUTE}
             fallback={<button disabled>执行清理（无权限）</button>}
             onClick={() => alert("执行清理")}
           >
@@ -147,8 +147,8 @@ export default function PermissionDemo() {
           )}
 
           {checker.hasPermission([
-            PERMISSIONS.USER_EDIT,
-            PERMISSIONS.USER_DISABLE,
+            PERMISSIONS.SYSTEM_USER_EDIT,
+            PERMISSIONS.SYSTEM_USER_DISABLE,
           ]) && (
             <div>
               <Tag color="purple">您有编辑或禁用用户权限（任意一个）</Tag>
