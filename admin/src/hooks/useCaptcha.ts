@@ -27,7 +27,6 @@ export default function useCaptcha(
   const fetchCaptcha = useCallback(async () => {
     try {
       const res = await API.getCaptcha(way);
-      console.log(res);
       if (res.isSuccess()) {
         setCaptchaBase64(res.getData() || "");
         return onSuccess(res.getData() || "");
