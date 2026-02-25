@@ -60,7 +60,7 @@ export default function PermissionDemo() {
 
       {/* 示例1: 使用 Hook 方式 */}
       <Card title="示例1: 使用 Hook 方式" style={{ marginBottom: "24px" }}>
-        <Space direction="vertical" style={{ width: "100%" }}>
+        <Space orientation="vertical" style={{ width: "100%" }}>
           <div>
             <strong>useHasPermission Hook:</strong>
             {canManageData ? (
@@ -88,7 +88,7 @@ export default function PermissionDemo() {
         title="示例2: 使用 AuthWrapper 组件"
         style={{ marginBottom: "24px" }}
       >
-        <Space direction="vertical" style={{ width: "100%" }}>
+        <Space orientation="vertical" style={{ width: "100%" }}>
           <div>
             <strong>有权限时显示:</strong>
             <AuthWrapper permission={PERMISSIONS.SYSTEM_USER_VIEW}>
@@ -139,7 +139,7 @@ export default function PermissionDemo() {
 
       {/* 示例4: 条件渲染 */}
       <Card title="示例4: 条件渲染" style={{ marginBottom: "24px" }}>
-        <Space direction="vertical" style={{ width: "100%" }}>
+        <Space orientation="vertical" style={{ width: "100%" }}>
           {canManageData && (
             <div>
               <Tag color="blue">使用 Hook 条件渲染: 您有数据管理权限</Tag>
