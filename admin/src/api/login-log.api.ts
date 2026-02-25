@@ -8,4 +8,6 @@ export const count = (
   range: "daily" | "weekly" | "monthly" | "yearly",
 ): Promise<Resp<number>> => appRequest.get(`/count/${range}`);
 
-export const getTrendData = () => Promise.resolve(new Resp(200, "success", []));
+export const getTrendData = (): Promise<
+  Resp<Array<{ date: string; count: number; growth: number }>>
+> => appRequest.get("/trend/daily");

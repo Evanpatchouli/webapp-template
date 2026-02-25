@@ -44,30 +44,11 @@ export default function DashboardView() {
       setWeeklyCount(weekly.getData() || 0);
       setMonthlyCount(monthly.getData() || 0);
       setYearlyCount(yearly.getData() || 0);
-      setTrendData(trend.getData() || generateMockTrendData()); // 如果没有API，使用模拟数据
+      setTrendData(trend.getData()!); // 如果没有API，使用模拟数据
     } finally {
       setLoading(false);
     }
   }, []);
-
-  // 生成模拟趋势数据（如果没有真实API）
-  const generateMockTrendData = (): DailyLoginData[] => {
-    const data: DailyLoginData[] = [];
-    const today = new Date();
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      const count = Math.floor(Math.random() * 500) + 300; // 300-800之间的随机数
-      const prevCount = Math.floor(Math.random() * 500) + 300;
-      const growth = ((count - prevCount) / prevCount) * 100;
-      data.push({
-        date: `${date.getMonth() + 1}/${date.getDate()}`,
-        count,
-        growth: Number(growth.toFixed(1)),
-      });
-    }
-    return data;
-  };
 
   // 折线图配置
   const lineChartOption = {
@@ -342,7 +323,10 @@ export default function DashboardView() {
                   style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
                 >
                   <div style={{ height: 400 }}>
-                    <EChartsReact option={lineChartOption} loading={loading} />
+                    <EChartsReact
+                      option={lineChartOption}
+                      showLoading={loading}
+                    />
                   </div>
                 </Card>
               </Col>

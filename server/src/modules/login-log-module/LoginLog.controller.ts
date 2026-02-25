@@ -29,4 +29,10 @@ export class LoginLogController {
     const count = await this.loginLogService.countYearlyLoginLog();
     return Resp.success(count);
   }
+
+  @Get('/trend/daily')
+  async getDailyTrendData() {
+    const result = await this.loginLogService.getDailyTrendData();
+    return Resp.success(result);
+  }
 }

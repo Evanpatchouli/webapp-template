@@ -2,6 +2,7 @@ import { DeleteResult, Model, Types } from 'mongoose';
 import { Injectable, Dependencies, Inject } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { LoginLog } from './LoginLog.schema';
+import dayjs from 'dayjs';
 
 @Injectable()
 @Dependencies(getModelToken(LoginLog.name))
@@ -87,5 +88,43 @@ export class LoginLogService {
         $lt: new Date().setFullYear(new Date().getFullYear()),
       },
     });
+  }
+
+  // 统计指定某天的登录日志
+  async countDayLoginLog(date: number) {
+    return this.model.countDocuments({
+      login_at: {
+        $gte: dayjs(date).startOf('day').valueOf(), // 起始时间
+        $lt: dayjs(date).endOf('day').valueOf(), // 结束时间
+      },
+    });
+  }
+
+  // 获取近七天登录日志的趋势数据
+  async getDailyTrendData() {
+    const today = dayjs();
+    const results = await Promise.all(
+      Array.from(Array(7).keys()).map(async (day) => {
+        // 获取前 day 天的日期
+        const date = today.subtract(7 - day, 'day');
+        const count = await this.countDayLoginLog(date.valueOf());
+        const growth = 0;
+        return {
+          date: date.format('YYYY-MM-DD'),
+          count,
+          growth,
+        };
+      }),
+    );
+
+    // 计算环比增长率
+    for (let i = 1; i < results.length; i++) {
+      const current = results[i];
+      const previous = results[i - 1];
+      current.growth =
+        ((current.count - previous.count) / previous.count) * 100;
+    }
+
+    return results; // 返回结果
   }
 }
