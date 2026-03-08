@@ -36,7 +36,7 @@ RUN pnpm install --prod --frozen-lockfile
 COPY --from=builder /app/dist ./dist
 
 # 暴露端口
-EXPOSE 8693
+EXPOSE 8793
 
 # 启动应用
 CMD ["pnpm", "start:prod"]

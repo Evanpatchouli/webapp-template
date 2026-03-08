@@ -76,7 +76,7 @@ class ApplicationStarter {
       credentials: true,
     });
 
-    const port = process.env.PORT || 8693;
+    const port = process.env.PORT || 8793;
     await app.listen(port);
 
     const bootstrapTime = (performance.now() - bootstrapStart) / 1000;

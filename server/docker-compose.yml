@@ -9,7 +9,7 @@ services:
     container_name: webapp-template-server
     restart: always
     ports:
-      - "8693:8693"
+      - "8793:8793"
     environment:
       NODE_ENV: production
     extra_hosts:
