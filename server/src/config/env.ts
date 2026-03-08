@@ -30,6 +30,7 @@ export interface EnvConfig {
 
   // 应用配置
   APP_PORT: Maybe<number>;
+  APP_HOST: Maybe<string>;
   APP_ENV: 'development' | 'production' | 'test';
   APP_SECRET: string;
 
@@ -98,6 +99,7 @@ export function getEnv<T = any>(key: keyof EnvConfig, defaultValue?: T): T {
 // 环境变量配置对象（推荐使用这个）
 export const env: EnvConfig = {
   APP_PORT: getEnv('APP_PORT', null),
+  APP_HOST: getEnv('APP_HOST', null),
   // 数据库
   DB_MONGO_CONNECTION: getEnv('DB_MONGO_CONNECTION', null),
   DB_MONGO_USERNAME: getEnv('DB_MONGO_USERNAME', null),

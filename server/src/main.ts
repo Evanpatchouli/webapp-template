@@ -76,8 +76,9 @@ class ApplicationStarter {
       credentials: true,
     });
 
-    const port = process.env.PORT || 8793;
-    await app.listen(port);
+    const port = AppConfig.Server.PORT;
+    const host = AppConfig.Server.HOST;
+    await app.listen(port, host);
 
     const bootstrapTime = (performance.now() - bootstrapStart) / 1000;
     logger.info(`✅ NestJS 应用启动完成，耗时 ${bootstrapTime.toFixed(2)} 秒`);

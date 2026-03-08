@@ -5,6 +5,7 @@ export default class AppConfig {
     ROOT: process.cwd(),
   };
   public static readonly Server = {
+    HOST: env.APP_HOST || '0.0.0.0',
     PORT: env.APP_PORT || 8793,
   };
 
