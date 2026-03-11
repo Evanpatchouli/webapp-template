@@ -14,3 +14,9 @@ services:
       NODE_ENV: production
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - mongo # 加入同一网络
+
+networks:
+  mongo:
+    external: true # 引用 mongo 网络
