@@ -6,6 +6,7 @@ services:
     build:
       context: ../
       dockerfile: server/Dockerfile
+    image: webapp-template-server:latest
     container_name: webapp-template-server
     restart: always
     ports:
