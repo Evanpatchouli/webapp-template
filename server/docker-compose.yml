@@ -4,8 +4,8 @@ services:
   # NestJS 应用服务
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: server/Dockerfile
     container_name: webapp-template-server
     restart: always
     ports:
