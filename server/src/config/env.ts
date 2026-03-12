@@ -4,9 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { Maybe } from '@webapp-template/common';
 
-// 根据环境加载不同的 .env 文件
-const envFile =
-  process.env.NODE_ENV === 'production' ? '.env.production' : '.env';
+const envFile = '.env';
 
 // {project_root}/.env
 const envPath = path.resolve(process.cwd(), envFile);
@@ -62,7 +60,7 @@ class EnvValidator {
     if (missingVars.length > 0) {
       throw new Error(
         `❌ 缺少必要的环境变量: ${missingVars.join(', ')}\n` +
-          `请检查 ${envFile} 文件或系统环境变量`,
+        `请检查 ${envFile} 文件或系统环境变量`,
       );
     }
   }
