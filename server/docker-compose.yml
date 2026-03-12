@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   # NestJS 应用服务
-  app:
+  webapp-template-server:
     build:
       context: ../
       dockerfile: server/Dockerfile
