@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # NestJS 应用服务
   webapp-template-server:
@@ -17,6 +15,8 @@ services:
       - "host.docker.internal:host-gateway"
     networks:
       - mongo # 加入同一网络
+    volumes:
+      - .env.production:/app/server/.env.production:ro # 只读挂载
 
 networks:
   mongo:
