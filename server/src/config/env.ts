@@ -26,6 +26,9 @@ export interface EnvConfig {
   DB_MONGO_USERNAME: Maybe<string>;
   DB_MONGO_PASSWORD: Maybe<string>;
 
+  // 数据迁移配置
+  MIGRATE_ON_START: boolean;
+
   JWT_SECRET: string;
 
   // 应用配置
@@ -62,7 +65,7 @@ class EnvValidator {
     if (missingVars.length > 0) {
       throw new Error(
         `❌ 缺少必要的环境变量: ${missingVars.join(', ')}\n` +
-          `请检查 ${envFile} 文件或系统环境变量`,
+        `请检查 ${envFile} 文件或系统环境变量`,
       );
     }
   }
@@ -104,6 +107,9 @@ export const env: EnvConfig = {
   DB_MONGO_CONNECTION: getEnv('DB_MONGO_CONNECTION', null),
   DB_MONGO_USERNAME: getEnv('DB_MONGO_USERNAME', null),
   DB_MONGO_PASSWORD: getEnv('DB_MONGO_PASSWORD', null),
+
+  // 数据迁移
+  MIGRATE_ON_START: getEnv('MIGRATE_ON_START', false),
 
   // 应用
   APP_ENV: getEnv('APP_ENV', 'development') as

@@ -18,7 +18,7 @@ export default class AppConfig {
   };
 
   public static readonly Migrator = {
-    on: false,
+    on: env.MIGRATE_ON_START,
     waitAfter: 1000,
   };
 
