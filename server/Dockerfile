@@ -34,7 +34,7 @@ RUN npm install -g pnpm
 COPY pnpm-workspace.yaml ./
 COPY package.json ./
 COPY pnpm-lock.yaml ./
-COPY server/.env server/.env.production ./server/
+COPY server/.env.production ./server/
 
 # 复制 common 包（生产依赖需要）
 COPY common ./common/
