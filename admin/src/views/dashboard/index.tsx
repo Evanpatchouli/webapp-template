@@ -75,7 +75,7 @@ export default function DashboardView() {
     },
     xAxis: {
       type: "category",
-      data: trendData.map((item) => item.date),
+      data: trendData?.map((item) => item.date) || [],
       axisLabel: { fontSize: 12 },
     },
     yAxis: {
@@ -88,7 +88,7 @@ export default function DashboardView() {
       {
         name: "登录人次",
         type: "line",
-        data: trendData.map((item) => item.count),
+        data: trendData?.map((item) => item.count) || [0, 0, 0, 0, 0, 0, 0],
         smooth: true,
         symbol: "circle",
         symbolSize: 8,
