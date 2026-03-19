@@ -169,7 +169,7 @@ export class UserController {
     return Resp.success(result);
   }
 
-  @Todo('FIX')
+  @Todo('FIX', "不清楚哪里需要修复")
   @Post('/logout')
   async logout(
     @CurrentUser() user: AuthTokenPayload,
