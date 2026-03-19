@@ -139,7 +139,7 @@ export default function AccountForm() {
             </Col>
             <Col span={8}>
               <div style={styles.captchaBox}>
-                <Captcha way={CaptchaWay.LOGIN} />
+                <Captcha way={accountMode === AccountMode.LOGIN ? CaptchaWay.LOGIN : CaptchaWay.REGISTER} />
               </div>
             </Col>
           </Row>
@@ -151,7 +151,7 @@ export default function AccountForm() {
             loading={loginBtnLoading}
             block
           >
-            立即登录
+            {accountMode === AccountMode.LOGIN ? "立即登录" : "提交注册"}
           </Button>
         </Form.Item>
       </Form>

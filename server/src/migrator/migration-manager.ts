@@ -11,7 +11,7 @@ export class MigrationManager {
   private migrations: MigrationDefinition[] = [];
   private useExistingConnection: boolean;
 
-  constructor(private mongoUri?: string) {
+  constructor(private mongoUri?: string, private options: mongoose.ConnectOptions = {}) {
     this.useExistingConnection = !mongoUri;
   }
 
@@ -31,7 +31,9 @@ export class MigrationManager {
       console.log('✅ 使用已有的数据库连接');
       return;
     }
-    await mongoose.connect(this.mongoUri!);
+    await mongoose.connect(this.mongoUri!, {
+      ...this.options,
+    });
     console.log('✅ 数据库连接成功');
   }
 

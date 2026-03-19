@@ -9,7 +9,10 @@ const force = args.includes('--force') || args.includes('-f');
 
 async function runMigration() {
   const MONGO_URI = process.env.MONGODB_URI || config.CONNECTION;
-  const manager = new MigrationManager(MONGO_URI);
+  const manager = new MigrationManager(MONGO_URI, {
+    user: config.USERNAME,
+    pass: config.PASSWORD,
+  });
 
   try {
     // 连接数据库

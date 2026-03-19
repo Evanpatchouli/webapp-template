@@ -5,7 +5,8 @@ export default class AppConfig {
     ROOT: process.cwd(),
   };
   public static readonly Server = {
-    PORT: env.APP_PORT || 8693,
+    HOST: env.APP_HOST || '0.0.0.0',
+    PORT: env.APP_PORT || 8793,
   };
 
   public static readonly DataBase = {
@@ -17,7 +18,7 @@ export default class AppConfig {
   };
 
   public static readonly Migrator = {
-    on: false,
+    on: env.MIGRATE_ON_START,
     waitAfter: 1000,
   };
 
