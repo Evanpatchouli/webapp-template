@@ -8,7 +8,6 @@ import { EventModule } from './events/event-module';
 import { RoleModule } from './modules/role-module';
 import { AdminModule } from './modules/admin';
 import { RequestMetaMiddleware } from './middlewares/request.meta.token.middleware';
-import { GlobalAuthTokenMiddleware } from './middlewares/global_auth_token.middleware';
 import { GlobalExcenptionCatchProvider } from './exception/filters';
 import { AuthProvider } from './auth/auth.provider';
 import { CaptchaModule } from './modules/captcha-module';
@@ -37,8 +36,6 @@ import { LoginLogModule } from './modules/login-log-module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(RequestMetaMiddleware, GlobalAuthTokenMiddleware)
-      .forRoutes('*');
+    consumer.apply(RequestMetaMiddleware).forRoutes('*');
   }
 }

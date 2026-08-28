@@ -8,11 +8,17 @@ export default function useLogout() {
   const loginStore = useLoginStore();
 
   useEvent("user.logout", () => {
-    logout().then((res) => {
-      console.log("logout", res);
-      // loginStore.logout();
-      // nav("/login");
-    });
+    void logout()
+      .then((res) => {
+        console.log("logout", res);
+      })
+      .catch((error) => {
+        console.error("logout failed", error);
+      })
+      .finally(() => {
+        loginStore.logout();
+        nav("/login", { replace: true });
+      });
   });
 
   return true;

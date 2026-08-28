@@ -17,7 +17,7 @@ import {
 } from './models/LoginForm';
 import Resp from '@/common/models/Resp';
 import { ILoginResult, LoginResult } from './models/LoginResult';
-import { CurrentUser } from 'src/decorators/request-meta.decorator';
+import { Auth, AuthUser } from '@/decorators/auth.decorator';
 import type { AuthTokenPayload } from '@/auth/jwt';
 import { LoginTypes, type LoginType } from '@/constants/login.constant';
 import { IsNotEmpty } from 'class-validator';
@@ -29,7 +29,6 @@ import { OPTWay } from '@/constants/opt.constant';
 import { Tag } from '../../decorators/tag.decorator';
 import { Ip } from '@/decorators/ip.decorator';
 import { HeaderAuthorization } from '@/decorators/header.decorator';
-import { Todo } from '@/decorators/todo.decorator';
 
 class LoginQuery {
   @IsNotEmpty()
@@ -169,10 +168,10 @@ export class UserController {
     return Resp.success(result);
   }
 
-  @Todo('FIX', "不清楚哪里需要修复")
+  @Auth()
   @Post('/logout')
   async logout(
-    @CurrentUser() user: AuthTokenPayload,
+    @AuthUser() user: AuthTokenPayload,
     @HeaderAuthorization() token: string,
   ) {
     await this.userService.logout(user, token);

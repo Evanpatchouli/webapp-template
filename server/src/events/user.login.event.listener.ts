@@ -1,10 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import UserLoginEvent from './user.login.event';
-import { InjectConnection } from '@nestjs/mongoose';
-import { Connection } from 'mongoose';
 import { logger } from '@/common/logger';
 import UserCreatedEvent from './user.created.event';
+import UserLogoutEvent from './user.logout.event';
 import { LoginLogService } from '@/modules/login-log-module/loginLog.service';
 
 @Injectable()
@@ -34,7 +33,7 @@ export class UserEventsListener {
   }
 
   @OnEvent('user.logout')
-  handleUserDeletedEvent(event: UserLoginEvent) {
+  handleUserLogoutEvent(event: UserLogoutEvent) {
     logger.info(`用户登出（id: ${event.id}）`);
     logger.debug('用户登出事件:', event);
   }

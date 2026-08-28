@@ -4,7 +4,6 @@ import {
   ExecutionContext,
   ForbiddenException,
   UnauthorizedException,
-  applyDecorators,
 } from '@nestjs/common';
 import {
   AUTH_REQUIRED_KEY,
@@ -12,6 +11,9 @@ import {
   ROLE_KEY,
   ROLE_IN_KEY,
   ROLES_KEY,
+  PERMISSION_KEY,
+  PERMISSION_IN_KEY,
+  PERMISSIONS_KEY,
 } from './auth.constants';
 import { RoleCodes } from '@/constants/role.constant';
 import { Hintable, HintableArray } from '@webapp-template/common';
@@ -49,6 +51,24 @@ export const RoleIn = (...roles: HintableArray<RoleCodes>) =>
  */
 export const Roles = (...roles: HintableArray<RoleCodes>) =>
   SetMetadata(ROLES_KEY, roles);
+
+/**
+ * 权限鉴权：单个权限，要求用户拥有此权限
+ */
+export const Permi = (permission: Hintable<string>) =>
+  SetMetadata(PERMISSION_KEY, permission);
+
+/**
+ * 权限鉴权：某几个权限之一（OR）
+ */
+export const PermiIn = (...permissions: HintableArray<string>) =>
+  SetMetadata(PERMISSION_IN_KEY, permissions);
+
+/**
+ * 权限鉴权：要求同时具备所有权限（AND）
+ */
+export const Permis = (...permissions: HintableArray<string>) =>
+  SetMetadata(PERMISSIONS_KEY, permissions);
 
 /**
  * 不强制认证，无用户返回 null

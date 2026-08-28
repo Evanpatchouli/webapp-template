@@ -1,3 +1,3 @@
 export default class UserLogoutEvent {
-  constructor(public readonly id: any) {}
+  constructor(public readonly id: string) {}
 }

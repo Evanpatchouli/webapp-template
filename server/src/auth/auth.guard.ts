@@ -12,6 +12,9 @@ import {
   ROLE_KEY,
   ROLE_IN_KEY,
   ROLES_KEY,
+  PERMISSION_KEY,
+  PERMISSION_IN_KEY,
+  PERMISSIONS_KEY,
 } from './auth.constants';
 import { verifyLoginTokenToAuthPayload } from './jwt';
 import { getAuthorization } from '../utils/request.util';
@@ -53,9 +56,27 @@ export class AuthGuard implements CanActivate {
       handler,
       clazz,
     ]);
+    const needPermissionSingle = this.reflector.getAllAndOverride<string>(
+      PERMISSION_KEY,
+      [handler, clazz],
+    );
+    const needPermissionIn = this.reflector.getAllAndOverride<string[]>(
+      PERMISSION_IN_KEY,
+      [handler, clazz],
+    );
+    const needPermissionsAll = this.reflector.getAllAndOverride<string[]>(
+      PERMISSIONS_KEY,
+      [handler, clazz],
+    );
 
     const needAuth =
-      isAuthRequired || needRoleSingle || needRoleIn || needRolesAll;
+      isAuthRequired ||
+      needRoleSingle ||
+      needRoleIn ||
+      needRolesAll ||
+      needPermissionSingle ||
+      needPermissionIn ||
+      needPermissionsAll;
 
     // 4. 若无认证 & 无角色，默认公开
     if (!needAuth) return true;
@@ -75,6 +96,7 @@ export class AuthGuard implements CanActivate {
 
     // 6. 角色鉴权
     const userRoles: string[] = user?.roles || [];
+    const userPermissions: string[] = user?.permissions || [];
 
     // Role(role) => user.roles 必须包含 role
     if (needRoleSingle && !userRoles.includes(needRoleSingle)) {
@@ -95,6 +117,38 @@ export class AuthGuard implements CanActivate {
       logger.info('请求地址', (req as Request).url);
       logger.error(
         `需要${needRolesAll.length > 1 ? '同时具备' : ''}角色: ${needRolesAll.join(', ')}`,
+      );
+      throw new ForbiddenException();
+    }
+
+    // Permi(permission) => user.permissions 必须包含 permission
+    if (
+      needPermissionSingle &&
+      !userPermissions.includes(needPermissionSingle)
+    ) {
+      logger.info('请求地址', (req as Request).url);
+      logger.error(`需要权限: ${needPermissionSingle}`);
+      throw new ForbiddenException();
+    }
+
+    // PermiIn(...permissions) => user.permissions 至少包含其中一个
+    if (
+      needPermissionIn &&
+      !needPermissionIn.some((p) => userPermissions.includes(p))
+    ) {
+      logger.info('请求地址', (req as Request).url);
+      logger.error(`需要满足任意权限: ${needPermissionIn.join(', ')}`);
+      throw new ForbiddenException();
+    }
+
+    // Permis(...permissions) => user.permissions 必须包含所有权限
+    if (
+      needPermissionsAll &&
+      !needPermissionsAll.every((p) => userPermissions.includes(p))
+    ) {
+      logger.info('请求地址', (req as Request).url);
+      logger.error(
+        `需要${needPermissionsAll.length > 1 ? '同时具备' : ''}权限: ${needPermissionsAll.join(', ')}`,
       );
       throw new ForbiddenException();
     }
