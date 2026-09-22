@@ -2,18 +2,13 @@ import React from "react";
 import { Flex, Layout, theme, Typography } from "antd";
 import { Outlet } from "react-router";
 import { APP_NAME } from "@/constants";
-import useLoginCheck from "@/hooks/useLoginCheck";
 import dayjs from "dayjs";
-import useLogout from "@/hooks/useLogout";
 import UserAvatar from "@/components/UserAvatar";
 import { AuthMenu } from "./components/auth-menu";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 export default function Home() {
-  useLoginCheck();
-  useLogout();
-
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();

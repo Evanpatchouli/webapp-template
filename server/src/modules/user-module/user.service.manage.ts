@@ -45,7 +45,9 @@ export class UserManageService {
     if (!user) {
       throw new CustomError(`User(id: ${user_id}) not found`);
     }
-    await this.userModel.updateById(user_id, { status: user.status === 1 ? 0 : 1 });
+    await this.userModel.getModel().updateOne({ _id: user_id }, {
+      $set: { status: user.status === 1 ? 0 : 1 }, $inc: { auth_version: 1 },
+    });
   }
 
   async updatePhone(user_id: string, phone: string): Promise<void> {
@@ -93,7 +95,9 @@ export class UserManageService {
     if (!user) {
       throw new CustomError(`User(id: ${user_id}) not found`);
     }
-    await this.userModel.updateById(user_id, { deleted_at: Date.now() });
+    await this.userModel.getModel().updateOne({ _id: user_id }, {
+      $set: { deleted_at: Date.now() }, $inc: { auth_version: 1 },
+    });
   }
 
   async restoreUser(user_id: string): Promise<void> {
@@ -101,6 +105,9 @@ export class UserManageService {
     if (!user) {
       throw new CustomError(`User(id: ${user_id}) not found`);
     }
-    await this.userModel.updateById(user_id, { deleted_at: null as any });
+    await this.userModel.getModel().updateOne(
+      { _id: user_id },
+      { $set: { deleted_at: null }, $inc: { auth_version: 1 } },
+    );
   }
 }

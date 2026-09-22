@@ -10,10 +10,8 @@ import { AdminModule } from './modules/admin';
 import { RequestMetaMiddleware } from './middlewares/request.meta.token.middleware';
 import { GlobalExcenptionCatchProvider } from './exception/filters';
 import { AuthProvider } from './auth/auth.provider';
-import { CaptchaModule } from './modules/captcha-module';
-import { OPTModule } from './modules/opt-module';
-import { EmailModule } from './modules/email-module';
 import { LoginLogModule } from './modules/login-log-module';
+import { OidcModule } from './auth/oidc.module';
 
 @Module({
   imports: [
@@ -25,9 +23,7 @@ import { LoginLogModule } from './modules/login-log-module';
     RoleModule,
     UserModule,
     AdminModule,
-    CaptchaModule,
-    OPTModule,
-    EmailModule,
+    OidcModule,
     LoginLogModule,
   ],
   controllers: [AppController],

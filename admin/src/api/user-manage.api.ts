@@ -25,9 +25,6 @@ export const updateEmail = (id: string, email: string): Promise<Resp<void>> =>
 export const updateRoles = (id: string, roleIds: number[]): Promise<Resp<void>> =>
   appRequest.put(`/${id}/roles`, { roleIds });
 
-export const resetPassword = (id: string): Promise<Resp<void>> =>
-  appRequest.put(`/${id}/reset-password`);
-
 export const deleteUser = (id: string): Promise<Resp<void>> =>
   appRequest.delete(`/${id}`);
 

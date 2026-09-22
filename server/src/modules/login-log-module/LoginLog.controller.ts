@@ -1,8 +1,10 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { LoginLogService } from './loginLog.service';
 import Resp from '@/common/models/Resp';
+import { Auth } from '../../auth/auth.decorator';
 
 @Controller('login-log')
+@Auth()
 export class LoginLogController {
   constructor(@Inject() private readonly loginLogService: LoginLogService) {}
 

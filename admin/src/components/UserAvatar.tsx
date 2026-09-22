@@ -1,51 +1,41 @@
 import { useLoginStore } from "@/auth/store";
-import { useEmit } from "@/hooks/useEmitter";
-import type { Nullable } from "@webapp-template/common";
-import type UserInfo from "@/types/userinfo";
-import { createStyles } from "@/utils/style.util";
-import { Dropdown, Avatar, type MenuProps } from "antd";
-import { useMemo } from "react";
-
-const useItems = (props: {
-  emitter: ReturnType<typeof useEmit>;
-  userInfo?: Nullable<UserInfo>;
-}) => {
-  return useMemo(() => {
-    const items: MenuProps["items"] = [
-      {
-        key: "nickname",
-        label: props.userInfo?.nickname,
-      },
-      {
-        key: "logout",
-        label: "退出登录",
-        onClick: () => props.emitter.emit("user.logout"),
-      },
-    ];
-    return items;
-  }, [props]);
-};
+import { logoutSession, SessionError } from "@/auth/session";
+import { Avatar, Dropdown, message, Modal, type MenuProps } from "antd";
+import { useState } from "react";
 
 export default function UserAvatar() {
-  const emitter = useEmit();
-  const { userInfo } = useLoginStore();
-  const items = useItems({ emitter, userInfo });
+  const userInfo = useLoginStore((state) => state.userInfo);
+  const [busy, setBusy] = useState(false);
+  const logout = async (sso = false) => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await logoutSession(sso);
+    } catch (error) {
+      message.error(error instanceof SessionError ? error.message : "退出失败，请重试；尚未确认退出");
+    } finally {
+      setBusy(false);
+    }
+  };
+  const items: MenuProps["items"] = [
+    { key: "nickname", label: userInfo?.nickname || userInfo?.username },
+    { key: "logout", label: busy ? "正在退出…" : "退出当前应用", disabled: busy, onClick: () => void logout() },
+    { key: "logout-sso", label: "退出中心 SSO", disabled: busy, onClick: () => {
+      Modal.confirm({
+        title: "退出中心 SSO",
+        content: "将退出当前应用并前往认证中心退出。其他应用的本地会话可能仍然存在。",
+        okText: "继续退出",
+        cancelText: "取消",
+        onOk: () => logout(true),
+      });
+    } },
+  ];
+  const name = userInfo?.nickname || userInfo?.username;
   return (
     <Dropdown menu={{ items }} placement="bottomRight" arrow>
-      <Avatar style={styles.avatar}>{formatName(userInfo?.nickname)}</Avatar>
+      <Avatar style={{ backgroundColor: "dodgerblue", cursor: "pointer" }}>
+        {name === "超级管理员" ? "管" : name?.slice(0, 1) || "U"}
+      </Avatar>
     </Dropdown>
   );
 }
-
-const formatName = (name?: string) => {
-  if (!name) return "U";
-  if (name === "超级管理员") return "管";
-  return name.slice(0, 1);
-};
-
-const styles = createStyles({
-  avatar: {
-    backgroundColor: "dodgerblue",
-    cursor: "pointer",
-  },
-});

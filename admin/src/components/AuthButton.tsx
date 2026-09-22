@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import { useHasRoleOrPermission } from '@/auth/hooks';
 import type { RoleCode, PermissionCode } from '@/constants/permissions';
 
-interface AuthButtonProps extends ButtonProps {
+interface AuthButtonProps extends Omit<ButtonProps, "role"> {
   role?: RoleCode | RoleCode[];
   permission?: PermissionCode | PermissionCode[];
   fallback?: ReactNode;

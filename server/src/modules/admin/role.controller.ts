@@ -2,7 +2,7 @@ import { Auth, Public, RoleIn, Roles } from '@decorators/auth.decorator';
 import { Controller, Get, Inject, Query, Req } from '@nestjs/common';
 import Resp from '@/common/models/Resp';
 import type { Request } from 'express';
-import { UserService } from '../user-module/user.service';
+import { UserRoleService } from '../user-module/user.service.role';
 import { Role, RoleDocument } from '../role-module/role.schema';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { RoleService } from '../role-module/role.service';
@@ -53,12 +53,12 @@ class QueryRolePageParams {
 export class RoleController {
   constructor(
     @Inject()
-    private userService: UserService,
+    private userService: UserRoleService,
     @Inject()
     private roleService: RoleService,
   ) { }
 
-  @Public()
+  @RoleIn('SUPER_ADMIN', 'DEV_ADMIN', 'OPS_ADMIN')
   @Get("/all")
   @Tag('查询所有角色')
   async queryAll(
@@ -85,6 +85,7 @@ export class RoleController {
   }
 
   @Deprecated('应当放到 user 模块')
+  @RoleIn('SUPER_ADMIN', 'DEV_ADMIN', 'OPS_ADMIN')
   @Tag('查询用户角色')
   @Get('/queryUserRole')
   async queryUserRole(

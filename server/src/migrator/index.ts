@@ -4,6 +4,7 @@ import { logger } from '@/common/logger';
 import { sleep } from '@/utils/sleep';
 import { v1 } from './v1';
 import { v2 } from './v2';
+import { v3 } from './v3';
 
 const MigratorConfig = AppConfig.Migrator;
 
@@ -29,6 +30,12 @@ export const migrate = async () => {
       version: 'v2',
       name: '更新管理员邮箱',
       up: v2,
+    });
+
+    manager.register({
+      version: 'v3',
+      name: 'Nexus Auth 身份映射与会话索引',
+      up: v3,
     });
 
     // 连接（实际上会跳过，使用已有连接）

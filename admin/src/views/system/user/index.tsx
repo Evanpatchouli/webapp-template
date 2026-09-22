@@ -21,7 +21,6 @@ import {
   DeleteOutlined,
   MailOutlined,
   PhoneOutlined,
-  RedoOutlined,
   WechatOutlined,
   UserOutlined,
   MoreOutlined,
@@ -92,19 +91,6 @@ export default function UserManageView() {
               : [],
           });
           break;
-        case "reset_password":
-          Modal.confirm({
-            title: "确认重置密码",
-            content: "确认重置该用户的密码吗？",
-            onOk: async () => {
-              await UserManageAPI.resetPassword(record.id);
-              message.success("密码重置成功");
-              loadData();
-            },
-            okText: "确认",
-            cancelText: "取消",
-          });
-          break;
         case "delete":
           Modal.confirm({
             title: "确认删除",
@@ -143,12 +129,6 @@ export default function UserManageView() {
         key: "update_roles",
         icon: <UserOutlined />,
         disabled: record.id === ADMIN_USER_ID, // 管理员账号不允许变更角色
-      },
-      {
-        label: "重置密码",
-        key: "reset_password",
-        icon: <RedoOutlined />,
-        disabled: record.id === ADMIN_USER_ID, // 管理员账号不允许重置密码
       },
       {
         label: "删除",

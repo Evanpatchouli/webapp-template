@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Loading from ".";
 
 export type DivProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {

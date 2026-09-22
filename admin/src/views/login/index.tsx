@@ -1,22 +1,24 @@
-import { useState } from "react";
-import { Card, Row, Col, Typography } from "antd";
-import { QrcodeOutlined, DesktopOutlined } from "@ant-design/icons";
-import LoginForm from "./LoginForm";
-import QRCodeLogin from "./QRCodeLogin";
+import { Alert, Button, Card, Row, Col, Space, Typography } from "antd";
+import { useLocation, useNavigate, useSearchParams } from "react-router";
+import { useLoginStore } from "@/auth/store";
+import { refreshSession, safeReturnTo, startLogin } from "@/auth/session";
 import { APP_NAME, SYSTEM_NAME } from "@/constants";
 import { createStyles } from "@/utils/style.util";
 import { useTitle } from "@evanpatchouli/react-hooks-kit";
 
 const { Title, Text } = Typography;
 
-enum LoginMode {
-  FORM = "form",
-  QRCODE = "qrcode",
-}
-
 export default function LoginView() {
   useTitle("登录 - WebApp");
-  const [mode, setMode] = useState<LoginMode>(LoginMode.FORM);
+  const status = useLoginStore((state) => state.status);
+  const [params] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const loggedOut = params.get("loggedOut") === "1" || location.pathname === "/logout";
+  const error = params.get("error");
+  const returnTo = safeReturnTo(params.get("returnTo"));
+  const errorText = error === "account_not_linked" ? "此账号尚未关联，请联系管理员开通。" :
+    error ? "身份认证失败，请重新登录。" : null;
 
   return (
     <div style={styles.container}>
@@ -25,20 +27,6 @@ export default function LoginView() {
         styles={{ body: styles.actionCardBody }}
         variant="borderless"
       >
-        {/* 右上角折角切换按钮 */}
-        <div
-          style={styles.corner}
-          onClick={() =>
-            setMode(mode === LoginMode.FORM ? LoginMode.QRCODE : LoginMode.FORM)
-          }
-          title={mode === LoginMode.FORM ? "切换扫码登录" : "切换账号登录"}
-        >
-          <div style={styles.ribbon} />
-          <div style={styles.icon}>
-            {mode === LoginMode.FORM ? <QrcodeOutlined /> : <DesktopOutlined />}
-          </div>
-        </div>
-
         <Row style={{ flex: 1 }}>
           {/* 左侧区域，系统名称LOGO等 */}
           <Col span={7} style={styles.leftSide}>
@@ -54,7 +42,22 @@ export default function LoginView() {
 
           {/* 右侧区域，放置登录表单等 */}
           <Col span={17} style={styles.rightSide}>
-            {mode === LoginMode.FORM ? <LoginForm /> : <QRCodeLogin />}
+            <Space orientation="vertical" size="large" style={{ width: "100%" }}>
+              <div>
+                <Title level={2}>{loggedOut && status === "anonymous" ? "已退出当前应用" : "欢迎登录"}</Title>
+                <Text type="secondary">使用 Nexus Auth 统一身份认证</Text>
+              </div>
+              {errorText ? <Alert type="error" showIcon title={errorText} /> : null}
+              {loggedOut ? <Text type="secondary">点击登录可再次进入；中心 SSO 会话可能仍有效。</Text> : null}
+              {status === "error" ? <>
+                <Alert type="warning" title="无法确认登录状态，请重试" />
+                <Button block onClick={() => void refreshSession()}>重试</Button>
+              </> : status === "authenticated" && !errorText ? (
+                <Button block size="large" type="primary" onClick={() => navigate(returnTo.slice(2))}>进入管理后台</Button>
+              ) : (
+                <Button block size="large" type="primary" loading={status === "loading"} onClick={() => startLogin(returnTo)}>使用 Nexus Auth 登录</Button>
+              )}
+            </Space>
           </Col>
         </Row>
       </Card>

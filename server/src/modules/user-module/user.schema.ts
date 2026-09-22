@@ -45,6 +45,7 @@ export class User {
     type: String,
     trim: true,
     maxlength: [100, '密码长度不能超过100个字符'],
+    select: false,
   })
   password: string;
 
@@ -72,6 +73,9 @@ export class User {
     comment: '状态：0-禁用，1-启用',
   })
   status: number;
+
+  @Prop({ type: Number, default: 0, select: false })
+  auth_version: number;
 
   @Prop({
     type: [Types.ObjectId],
@@ -153,7 +157,7 @@ UserSchema.set('toJSON', {
   versionKey: false,
   transform: (doc, ret) => {
     ret.id = ret._id.toString();
-    const { _id, __v, ...rest } = ret;
+    const { _id, __v, password, ...rest } = ret;
     return rest;
   },
 });

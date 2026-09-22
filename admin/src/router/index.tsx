@@ -7,12 +7,17 @@ import { generateRoutes } from "./generator";
 import { routeConfigs } from "./config";
 import NotFound from "@/views/notfound";
 import Loading from "@/components/Loading";
+import SessionBoundary from "@/components/SessionBoundary";
 
 const authorizedRoutes = generateRoutes(routeConfigs);
 
 const router = createHashRouter([
   {
     path: "/login",
+    Component: LoginView,
+  },
+  {
+    path: "/logout",
     Component: LoginView,
   },
   {
@@ -25,7 +30,7 @@ const router = createHashRouter([
   },
   {
     path: "/",
-    element: <Home />,
+    element: <SessionBoundary><Home /></SessionBoundary>,
     children: [
       {
         index: true, // 当访问父路由时

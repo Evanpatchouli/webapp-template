@@ -2,6 +2,7 @@ import { MigrationManager } from '../src/migrator/migration-manager';
 import config from '../src/migrator/config';
 import { v1 } from '../src/migrator/v1';
 import { v2 } from '../src/migrator/v2';
+import { v3 } from '../src/migrator/v3';
 
 // 解析命令行参数
 const args = process.argv.slice(2);
@@ -29,6 +30,12 @@ async function runMigration() {
       version: 'v2',
       name: '更新管理员邮箱',
       up: v2,
+    });
+
+    manager.register({
+      version: 'v3',
+      name: 'Nexus Auth 身份映射与会话索引',
+      up: v3,
     });
 
     // 运行迁移

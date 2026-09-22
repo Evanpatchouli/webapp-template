@@ -1,7 +1,6 @@
 export default interface UserInfo {
   id: string;
-  openid: string;
-  phone: string;
+  username: string;
   nickname: string;
   email: string;
   roles: string[];

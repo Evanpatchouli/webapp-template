@@ -84,11 +84,8 @@ export class GlobalExcenptionCatchFilter implements ExceptionFilter {
         ? `${GlobalExcenptionCatchFilter.name}`
         : `${caller}`;
 
-    this.logger.error(
-      message,
-      (exception as Error).stack ?? String(exception),
-      loggerCaller,
-    );
+    // Driver/SDK errors may contain credentials, URLs or request headers.
+    this.logger.error(`request_failed status=${httpStatus}`, loggerCaller);
 
     const responseBody = {
       message,

@@ -1,12 +1,9 @@
 // useEmitter.ts
 import { useEffect } from "react";
 import mitt, { type Emitter } from "mitt";
-import type { UserLoginEvent } from "@/events/user.event";
 
 type Events = {
   ["*"]: any;
-  ["user.login"]: UserLoginEvent;
-  ["user.logout"]: any;
 };
 
 export const emitter: Emitter<Events> = mitt<Events>();

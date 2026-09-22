@@ -1,4 +1,3 @@
-import { usePermissionChecker } from "@/auth/hooks";
 import { Menu, type MenuProps } from "antd";
 import { useNavigate, useLocation } from "react-router";
 import { useMemo } from "react";

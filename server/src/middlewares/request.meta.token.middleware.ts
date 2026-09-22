@@ -46,7 +46,7 @@ export class RequestMetaMiddleware implements NestMiddleware {
   private logAccess(req: Request, meta: AccessInfo): void {
     const logData = {
       method: req.method,
-      url: req.originalUrl,
+      url: req.path,
       // ip: meta.ip,
       // userAgent: meta.userAgent,
       // userId: meta.user?.userId || 'anonymous',

@@ -251,22 +251,17 @@ export const PERMISSIONS = {
 1. **前端权限仅用于 UI 控制**，不能作为安全防护手段，真正的权限验证必须在后端进行
 2. **权限编码大小写敏感**，建议统一使用大写字母和下划线（与后端一致）
 3. **超级管理员** 通常拥有所有权限，可以在后端返回时包含所有权限编码
-4. **权限缓存** 存储在 localStorage 中，退出登录时会自动清除
+4. **身份和权限** 仅保存在内存，由 `GET /api/auth/me` 返回。页面加载、跨标签通知和窗口重新激活时校验；不信任 localStorage。
 
 ## 🔄 权限更新流程
 
 当用户权限变更时：
 
 ```typescript
-import { useLoginStore } from '@/auth/store';
+import { refreshSession } from '@/auth/session';
 
-// 更新用户信息（包含新的 roles 和 permissions）
-const { setUserInfo } = useLoginStore();
-setUserInfo({
-  ...userInfo,
-  roles: ['ADMIN'],
-  permissions: ['USER_VIEW', 'USER_CREATE']
-});
+// 后端变更角色后重新读取身份和权限，不在前端授予权限。
+await refreshSession();
 ```
 
 ## 📚 API 参考

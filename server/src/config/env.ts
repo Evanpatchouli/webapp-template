@@ -56,7 +56,6 @@ class EnvValidator {
       'DB_MONGO_CONNECTION',
       'DB_MONGO_USERNAME',
       'DB_MONGO_PASSWORD',
-      'JWT_SECRET',
       'APP_SECRET',
       'SESSION_SECRET',
     ];
@@ -119,7 +118,8 @@ export const env: EnvConfig = {
   APP_SECRET: getEnv('APP_SECRET', 'your-secret-key-change-in-production'),
 
   // JWT
-  JWT_SECRET: getEnv('JWT_SECRET'),
+  // Retained only for compiling archived legacy services; never used by OIDC.
+  JWT_SECRET: getEnv('JWT_SECRET', ''),
 
   // SESSION
   SESSION_SECRET: getEnv('SESSION_SECRET'),

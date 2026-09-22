@@ -1,6 +1,6 @@
 // router/config.tsx
 import { lazy, type ComponentType } from "react";
-import { ROLES, PERMISSIONS, type RoleCode, type PermissionCode } from "@/constants/permissions";
+import { PERMISSIONS, type RoleCode, type PermissionCode } from "@/constants/permissions";
 
 // 路由配置接口
 export interface RouteConfig {

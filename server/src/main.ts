@@ -1,13 +1,15 @@
 import 'module-alias/register';
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { migrate } from './migrator';
 import { logger } from '@/common/logger';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import AppConfig from './app.config';
 import cache from './cache';
-import { TraceIdInterceptor } from '@/common/trace/trace.interceptor';
-import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import { getConnectionToken } from '@nestjs/mongoose';
+import type { Connection } from 'mongoose';
+import { OIDC_SETTINGS, type OidcSettings } from './auth/oidc.config';
+import { configureApplication } from './bootstrap';
 
 class ApplicationStarter {
   private readonly name = 'nest-server-starter';
@@ -17,7 +19,7 @@ class ApplicationStarter {
 
     try {
       // 执行数据库迁移
-      await this.runMigrations(startTime);
+      // Migrations run through the explicit deployment command, never before Mongo connects.
 
       // 启动 NestJS 应用
       await this.bootstrapNestApp(startTime);
@@ -25,20 +27,8 @@ class ApplicationStarter {
       const totalTime = (performance.now() - startTime) / 1000;
       logger.info(`🎉 服务启动完成，全程耗时 ${totalTime.toFixed(2)} 秒`);
     } catch (error) {
-      logger.error('❌ 服务启动失败:', error);
+      logger.error('❌ 服务启动失败:', error instanceof Error ? error.name : 'unknown_error');
       process.exit(1);
-    }
-  }
-
-  private async runMigrations(startTime: number): Promise<void> {
-    if (AppConfig.Migrator.on) {
-      const migrationStart = performance.now();
-      logger.info('🚀 开始执行数据库迁移...');
-
-      await migrate();
-
-      const migrationTime = (performance.now() - migrationStart) / 1000;
-      logger.info(`✅ 数据库迁移完成，耗时 ${migrationTime.toFixed(2)} 秒`);
     }
   }
 
@@ -47,34 +37,12 @@ class ApplicationStarter {
     logger.info('🚀 启动 NestJS 应用...');
 
     const app = await NestFactory.create(AppModule);
-    const httpAdapter = app.get(HttpAdapterHost);
-    // 全局前缀
-    app.setGlobalPrefix('api');
-    // app.useGlobalFilters(new CatchGlobalExcenptionFilter(httpAdapter));
-    app.useGlobalPipes(
-      new ValidationPipe({
-        transform: true, // 必须设置为 true
-        transformOptions: {
-          enableImplicitConversion: false, // 如果使用 @Transform，这个可以设为 false
-        },
-        whitelist: false, // 移除未装饰的属性
-        forbidNonWhitelisted: false, // 禁止未装饰的属性
-      }),
-    );
-    app.useGlobalInterceptors(new TraceIdInterceptor());
-    app.use(
-      session({
-        secret: 'my-secret',
-        resave: false,
-        saveUninitialized: false,
-      }),
-    );
-
-    // 启用 CORS
-    app.enableCors({
-      origin: process.env.CORS_ORIGIN || '*',
-      credentials: true,
-    });
+    const settings = app.get<OidcSettings>(OIDC_SETTINGS);
+    const connection = app.get<Connection>(getConnectionToken());
+    const store = MongoStore.create({ client: connection.getClient(), dbName: connection.name,
+      collectionName: 'web_sessions', ttl: settings.idleSeconds, touchAfter: 0 });
+    store.on('error', () => logger.error('Session Store unavailable'));
+    configureApplication(app, settings, store);
 
     const port = AppConfig.Server.PORT;
     const host = AppConfig.Server.HOST;
@@ -106,11 +74,11 @@ async function main() {
 
 // 错误处理
 process.on('unhandledRejection', (reason, promise) => {
-  logger.error('未处理的 Promise 拒绝:', reason);
+  logger.error('未处理的 Promise 拒绝:', reason instanceof Error ? reason.name : 'unknown_error');
 });
 
 process.on('uncaughtException', (error) => {
-  logger.error('未捕获的异常:', error);
+  logger.error('未捕获的异常:', error.name);
   process.exit(1);
 });
 
@@ -132,7 +100,7 @@ async function GracefulShutdown(signal: string, app: INestApplication) {
     logger.info('✅ 应用已优雅关闭');
     process.exit(0);
   } catch (error) {
-    logger.error('❌ 关闭应用时发生错误:', error);
+    logger.error('❌ 关闭应用时发生错误:', error instanceof Error ? error.name : 'unknown_error');
     process.exit(1);
   }
 }

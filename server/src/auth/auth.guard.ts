@@ -4,10 +4,10 @@ import {
   ExecutionContext,
   UnauthorizedException,
   ForbiddenException,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import {
-  AUTH_REQUIRED_KEY,
   PUBLIC_KEY,
   ROLE_KEY,
   ROLE_IN_KEY,
@@ -16,16 +16,15 @@ import {
   PERMISSION_IN_KEY,
   PERMISSIONS_KEY,
 } from './auth.constants';
-import { verifyLoginTokenToAuthPayload } from './jwt';
-import { getAuthorization } from '../utils/request.util';
+import { BusinessSessionService } from './session.service';
 import { logger } from '@/common/logger';
 import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector, private sessions: BusinessSessionService) {}
 
-  canActivate(ctx: ExecutionContext): boolean {
+  async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const handler = ctx.getHandler();
     const clazz = ctx.getClass();
     const req = ctx.switchToHttp().getRequest();
@@ -37,12 +36,7 @@ export class AuthGuard implements CanActivate {
     ]);
     if (isPublic) return true;
 
-    // 2. 判断是否需要认证
-    const isAuthRequired = this.reflector.getAllAndOverride<boolean>(
-      AUTH_REQUIRED_KEY,
-      [handler, clazz],
-    );
-
+    // 2. 读取认证与授权元数据。所有未标记 Public 的接口都必须有业务 Session。
     // 3. 判断是否有角色注解（角色注解隐含需要认证）
     const needRoleSingle = this.reflector.getAllAndOverride<string>(ROLE_KEY, [
       handler,
@@ -69,26 +63,11 @@ export class AuthGuard implements CanActivate {
       [handler, clazz],
     );
 
-    const needAuth =
-      isAuthRequired ||
-      needRoleSingle ||
-      needRoleIn ||
-      needRolesAll ||
-      needPermissionSingle ||
-      needPermissionIn ||
-      needPermissionsAll;
-
-    // 4. 若无认证 & 无角色，默认公开
-    if (!needAuth) return true;
-
-    // 5. 执行认证
-    const token = getAuthorization(req);
-    if (!token) {
-      logger.info('请求地址', (req as Request).url);
-      throw new UnauthorizedException('未提供认证令牌');
-    }
-
-    const user = verifyLoginTokenToAuthPayload(token);
+    // Every non-public endpoint requires a business session. Never fall back to Bearer.
+    const user = await this.sessions.authenticate(req).catch((error: unknown) => {
+      if (error instanceof UnauthorizedException || error instanceof ForbiddenException) throw error;
+      throw new ServiceUnavailableException('会话服务暂不可用');
+    });
 
     // 写入 req.meta.user
     req.meta = req.meta || {};

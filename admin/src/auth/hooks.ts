@@ -7,7 +7,7 @@ import type { RoleCode, PermissionCode } from '@/constants/permissions';
  * 使用权限检查器 Hook
  */
 export function usePermissionChecker(): PermissionChecker {
-  const { userInfo } = useLoginStore();
+  const userInfo = useLoginStore((state) => state.userInfo);
 
   return useMemo(() => {
     return new PermissionChecker(

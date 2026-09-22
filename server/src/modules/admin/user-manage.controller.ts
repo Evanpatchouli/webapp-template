@@ -1,5 +1,5 @@
 import { Auth, Public, RoleIn, Roles } from '@decorators/auth.decorator';
-import { Controller, Get, Inject, Query, Req, Param, Put, Delete, Body } from '@nestjs/common';
+import { Controller, Get, Inject, Query, Req, Param, Put, Delete, Body, GoneException } from '@nestjs/common';
 import Resp from '../../common/models/Resp';
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { RoleService } from '../role-module/role.service';
@@ -123,9 +123,8 @@ export class UserManageController {
   @RoleIn('SUPER_ADMIN', 'DEV_ADMIN')
   @Put(':id/reset-password')
   @Tag('重置用户密码')
-  async resetPassword(@Param('id') id: string): Promise<Resp<void>> {
-    await this.userManageService.resetPassword(id);
-    return Resp.success();
+  resetPassword(@Param('id') id: string): Promise<Resp<void>> {
+    throw new GoneException('密码由 Nexus Auth 管理');
   }
 
   @RoleIn('SUPER_ADMIN', 'DEV_ADMIN')

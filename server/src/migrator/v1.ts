@@ -900,11 +900,8 @@ export async function v1() {
 
   const defaultAdminUserInfo = {
     _id: defaultAdminUserID, // 固定ID，方便测试和管理
-    openid: 'ofSEA2KzGjX1IGcUFASZWgln9Lnw',
     nickname: '超级管理员',
-    phone: '19157691370',
     username: 'root',
-    password: 'root',
     status: 1,
     role_ids: [superAdminRole?._id],
     created_at: Date.now(),
@@ -916,13 +913,7 @@ export async function v1() {
 
     await adminUser.save();
     console.log('✅ 已创建默认管理员用户');
-    console.log('🔑 默认管理员用户信息：');
-    console.log(`   ID: ${defaultAdminUserInfo._id.toString()}`);
-    console.log(`   用户名: ${defaultAdminUserInfo.username}`);
-    console.log(`   密码: ${defaultAdminUserInfo.password}`);
-    console.log(`   OpenID: ${defaultAdminUserInfo.openid}`);
-    console.log(`   手机号: ${defaultAdminUserInfo.phone}`);
-    console.log(`   昵称: ${defaultAdminUserInfo.nickname}`);
+    console.log('⚠️ 管理员尚未绑定 Nexus Auth 外部身份，请使用受控绑定工具完成开通。');
   }
 
   console.log('\n🎉 数据初始化完成！');
